@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-josefin-sans);
+  --font-serif: var(--font-abril-fatface);
+  --color-brand-red: #5e0d0c; /* Updated deep red from screenshot */
+  --color-brand-yellow: #fc0;
+  --color-brand-dark: #232323;
+  --color-brand-gray: #f8f8f8;
+  --color-brand-text: #3c3c3c;
+  --color-brand-border: #e6e6e6;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #232323;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-abril-fatface), serif;
+}
+
+/* Custom Utilities for precise replication */
+.text-xxs {
+  font-size: 10px;
+}
+.text-menu {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes marquee2 {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+.animate-marquee2 {
+  animation: marquee2 25s linear infinite;
 }
