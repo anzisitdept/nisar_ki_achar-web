@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Josefin_Sans, Abril_Fatface } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/cart/CartDrawer";
+import CheckoutModal from "@/components/cart/CheckoutModal";
+import SearchModal from "@/components/layout/SearchModal";
 
 const josefinSans = Josefin_Sans({
   variable: "--font-josefin-sans",
@@ -25,8 +29,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${josefinSans.variable} ${abrilFatface.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col font-sans">
-        {children}
+      <body className="antialiased min-h-screen flex flex-col font-sans bg-white">
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <CheckoutModal />
+          <SearchModal />
+        </CartProvider>
       </body>
     </html>
   );

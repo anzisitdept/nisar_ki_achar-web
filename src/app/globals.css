@@ -5,52 +5,63 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-josefin-sans);
   --font-serif: var(--font-abril-fatface);
-  --color-brand-red: #5e0d0c; /* Updated deep red from screenshot */
-  --color-brand-yellow: #fc0;
-  --color-brand-dark: #232323;
-  --color-brand-gray: #f8f8f8;
-  --color-brand-text: #3c3c3c;
-  --color-brand-border: #e6e6e6;
+  --color-primary: #5e0d0c;
+  --color-secondary: #fae9e8;
+  --color-[#5e0d0c]: #5e0d0c;
+  --color-[#fae9e8]: #fae9e8;
+  --color-[#e95144]: #e95144;
+  --color-sale: #e95144;
+  --color-accent: #fbb03b;
+  --color-surface: #f9fafb;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
 }
 
 :root {
   --background: #ffffff;
   --foreground: #232323;
+  --color-primary: #5e0d0c;
+  --color-secondary: #fae9e8;
+  --color-sale: #e95144;
+  --color-accent: #fbb03b;
+  --color-surface: #f9fafb;
+  --color-text: #232323;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-josefin-sans), sans-serif;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-abril-fatface), serif;
 }
 
-/* Custom Utilities for precise replication */
-.text-xxs {
-  font-size: 10px;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-.text-menu {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
-
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
+::-webkit-scrollbar-thumb {
+  background: #5e0d0c;
+  border-radius: 3px;
 }
-
-@keyframes marquee2 {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(0%); }
+::-webkit-scrollbar-thumb:hover {
+  background: #430807;
 }
 
-.animate-marquee {
-  animation: marquee 25s linear infinite;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.animate-marquee2 {
-  animation: marquee2 25s linear infinite;
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
 }
