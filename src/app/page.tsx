@@ -56,25 +56,7 @@ export default function Home() {
         {/* 7. Product Block 3 */}
         <ProductCarousel title="Bundle Offers" />
 
-        {/* 8. Image Banner 2 */}
-        <section className="py-8 bg-[#f8f8f8]">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="relative w-full h-[300px] md:h-[400px] bg-gray-200 overflow-hidden group">
-              <img 
-                src="https://soghatekhas.com/cdn/shop/files/Web_banner_37_4b8a7db5-2237-470a-957b-d1ce5fc8f492.jpg?v=1774275085&width=3840" 
-                alt="Banner 2" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 hidden md:block"
-              />
-              <img 
-                src="https://soghatekhas.com/cdn/shop/files/Mob_banner_2_db98b3c4-f009-4d28-8130-70eb47e7f919.jpg?v=1774275104&width=750" 
-                alt="Banner 2 Mobile" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 md:hidden"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* 9. Slide Show 2 (Secondary Hero/Promotional) */}
+        {/* 8. Slide Show 2 (Secondary Hero/Promotional) */}
         <section className="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center my-8">
           <img 
             src="https://soghatekhas.com/cdn/shop/files/Web_banner_2_4_2b23b875-3457-4e94-81fb-9792bedcbc97.jpg?v=1774275131&width=750" 
@@ -83,13 +65,13 @@ export default function Home() {
           />
         </section>
 
-        {/* 10. Product Block 4 */}
+        {/* 9. Product Block 4 */}
         <ProductCarousel title="Special Items" />
 
-        {/* 11. Product Block 5 */}
+        {/* 10. Product Block 5 */}
         <ProductCarousel title="More to Love" />
 
-        {/* 12. Contact Blocks at Bottom */}
+        {/* 11. Contact Blocks at Bottom */}
         <ContactBlock />
 
       </main>

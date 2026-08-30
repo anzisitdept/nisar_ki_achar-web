@@ -1,20 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Star, ShoppingBag, Heart, ShieldCheck, Truck, RotateCcw, Check, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, Heart, Share2, Eye, Truck, MessageCircle, Check } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const { addToCart, toggleWishlist, isInWishlist, setIsCheckoutOpen } = useCart();
 
-  const [selectedImage, setSelectedImage] = useState(product.images[0] || product.image);
-  const [selectedWeight, setSelectedWeight] = useState(product.weights[0] || '500g');
+  const defaultWeights = product.weights && product.weights.length > 0 ? product.weights : ['4000g', '2000g', '1200g', '800g'];
+  const [selectedWeight, setSelectedWeight] = useState(defaultWeights[0]);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'benefits' | 'usage'>('description');
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'benefits'>('description');
 
-  const currentPrice = product.weightPrices[selectedWeight] || product.price;
+  const currentPrice = (product.weightPrices && product.weightPrices[selectedWeight])
+    ? product.weightPrices[selectedWeight]
+    : product.price;
+
+  const originalPrice = product.originalPrice || Math.round(currentPrice * 1.4);
+  const subtotal = currentPrice * quantity;
+
+  const [selectedImage, setSelectedImage] = useState(product.images[0] || product.image);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 450) {
+        setShowStickyBar(true);
+      } else {
+        setShowStickyBar(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleAddToCart = () => {
     addToCart(product, selectedWeight, quantity);
@@ -25,345 +45,507 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     setIsCheckoutOpen(true);
   };
 
+  const handleBargainClick = () => {
+    const message = encodeURIComponent(`Hi! I am looking for a discount on ${product.name} (${selectedWeight}).`);
+    window.open(`https://wa.me/923001234567?text=${message}`, '_blank');
+  };
+
   return (
-    <div className="space-y-12">
+    <div style={{ fontFamily: 'sans-serif', color: '#222' }}>
       
-      {/* Top Product Hero Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+      {/* Main Grid: Left Gallery | Right Details */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '40px', alignItems: 'start' }}>
         
-        {/* Left Column: Image Gallery */}
-        <div className="space-y-4">
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-200 shadow-md group">
+        {/* Left Column: Gallery */}
+        <div>
+          <div style={{ position: 'relative', width: '100%', borderRadius: '4px', overflow: 'hidden', background: '#f9f9f9', border: '1px solid #eee' }}>
             <img
               src={selectedImage}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
             />
-            {product.discountBadge && (
-              <span className="absolute top-4 left-4 bg-[#e95144] text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-md">
-                {product.discountBadge}
-              </span>
-            )}
+            {/* Badges */}
+            <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', flexDirection: 'column', gap: '6px', zIndex: 2 }}>
+              {product.discountBadge && (
+                <span style={{ background: '#e95144', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '2px' }}>
+                  {product.discountBadge}
+                </span>
+              )}
+              {product.isBestSeller && (
+                <span style={{ background: '#f39c12', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '2px' }}>
+                  Best Selling
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* Thumbnail Gallery */}
-          {product.images.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImage(img)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition ${
-                    selectedImage === img ? 'border-[#5e0d0c] shadow-md' : 'border-gray-200 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+          {/* Thumbnail Strip */}
+          {product.images && product.images.length > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', overflowX: 'auto' }}>
+              <button style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.6 }} onClick={() => {
+                const idx = product.images.indexOf(selectedImage);
+                if (idx > 0) setSelectedImage(product.images[idx - 1]);
+              }}>
+                <ChevronLeft size={20} />
+              </button>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      border: selectedImage === img ? '2px solid #5e0d0c' : '1px solid #ddd',
+                      borderRadius: '2px',
+                      overflow: 'hidden',
+                      padding: 0,
+                      cursor: 'pointer',
+                      background: '#fff'
+                    }}
+                  >
+                    <img src={img} alt={`Thumb ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </button>
+                ))}
+              </div>
+
+              <button style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.6 }} onClick={() => {
+                const idx = product.images.indexOf(selectedImage);
+                if (idx < product.images.length - 1) setSelectedImage(product.images[idx + 1]);
+              }}>
+                <ChevronRight size={20} />
+              </button>
             </div>
           )}
         </div>
 
-        {/* Right Column: Product Details & Purchase Form */}
-        <div className="space-y-6">
+        {/* Right Column: Information & Controls */}
+        <div style={{ paddingLeft: '10px' }}>
           
-          <div>
-            <div className="flex items-center space-x-2 text-xs text-[#5e0d0c] font-bold uppercase tracking-wider mb-2">
-              <span>{product.categoryName}</span>
-              <span>•</span>
-              <span className="text-green-700 bg-green-50 px-2.5 py-0.5 rounded-full">In Stock (Fresh Batch)</span>
-            </div>
+          {/* Title */}
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '24px', fontWeight: 700, color: '#111', lineHeight: 1.3, marginBottom: '8px' }}>
+            {product.name}
+          </h1>
 
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight">
-              {product.name}
-            </h1>
-            <p className="text-lg md:text-xl font-bold text-[#5e0d0c] mt-1 font-sans">
-              {product.urduName}
-            </p>
-
-            {/* Star Rating Header */}
-            <div className="flex items-center space-x-2 mt-3">
-              <div className="flex text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400" />
-                ))}
-              </div>
-              <span className="text-xs font-bold text-gray-800">{product.rating} / 5.0</span>
-              <span className="text-xs text-gray-500">({product.reviewsCount} customer reviews)</span>
-            </div>
+          {/* Rating & Urgency */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#555', marginBottom: '6px' }}>
+            <span style={{ color: '#be0000', fontSize: '15px' }}>★★★★★</span>
+            <span style={{ fontWeight: 600, color: '#333' }}>94 reviews</span>
           </div>
 
-          {/* Pricing Box */}
-          <div className="bg-[#fae9e8] p-4 rounded-xl flex items-center justify-between border border-red-100">
-            <div>
-              <div className="flex items-baseline space-x-3">
-                <span className="text-2xl md:text-3xl font-extrabold text-[#e95144]">
-                  Rs. {currentPrice}
-                </span>
-                <span className="text-sm text-gray-400 line-through">
-                  Rs. {product.originalPrice}
-                </span>
-              </div>
-              <p className="text-[11px] text-gray-600 mt-0.5">Price inclusive of all taxes. Free shipping on orders over Rs. 3,000.</p>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#e95144', fontWeight: 600, marginBottom: '14px' }}>
+            <span>🔥</span> 6 sold in last 17 hours
+          </div>
 
+          <p style={{ fontSize: '12px', color: '#666', marginBottom: '14px' }}>
+            Product type: <span style={{ color: '#333', fontWeight: 500 }}>{product.categoryName || 'Pickle'}</span>
+          </p>
+
+          {/* Price Line */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '20px' }}>
+            <span style={{ textDecoration: 'line-through', color: '#888', fontSize: '16px' }}>
+              Rs.{originalPrice.toLocaleString()}.00
+            </span>
+            <span style={{ color: '#e95144', fontSize: '20px', fontWeight: 700 }}>
+              Rs.{currentPrice.toLocaleString()}.00
+            </span>
+          </div>
+
+          {/* Need More Discount ~ Chat with Us! Box */}
+          <div style={{ marginBottom: '24px' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: '#111', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Need More Discount ~ Chat with Us! <MessageCircle size={20} />
+            </p>
             <button
-              onClick={() => toggleWishlist(product.id)}
-              className={`p-3 rounded-full border transition ${
-                isInWishlist(product.id)
-                  ? 'bg-red-50 text-red-600 border-red-200'
-                  : 'bg-white text-gray-400 border-gray-200 hover:text-red-500'
-              }`}
+              onClick={handleBargainClick}
+              style={{
+                width: '100%',
+                background: '#25d366',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '14px',
+                letterSpacing: '0.08em',
+                padding: '14px 20px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textAlign: 'center',
+                boxShadow: '0 2px 6px rgba(37, 211, 102, 0.3)'
+              }}
             >
-              <Heart className="w-5 h-5 fill-current" />
+              BARGAIN NOW
             </button>
           </div>
 
-          {/* Weight Selection Options */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-              Select Jar Weight / Size:
-            </label>
-            <div className="flex flex-wrap gap-3">
-              {product.weights.map(weight => (
-                <button
-                  key={weight}
-                  onClick={() => setSelectedWeight(weight)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition ${
-                    selectedWeight === weight
-                      ? 'bg-[#5e0d0c] text-white border-[#5e0d0c] shadow-md'
-                      : 'bg-white text-gray-800 border-gray-300 hover:border-[#5e0d0c]'
-                  }`}
-                >
-                  {weight} {product.weightPrices[weight] && `(Rs. ${product.weightPrices[weight]})`}
-                </button>
-              ))}
+          {/* Weight Selection Grid */}
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ fontSize: '12px', color: '#555', marginBottom: '8px' }}>
+              Gross Weight: <strong style={{ color: '#111' }}>{selectedWeight}</strong>
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              {defaultWeights.map(w => {
+                const active = selectedWeight === w;
+                return (
+                  <button
+                    key={w}
+                    onClick={() => setSelectedWeight(w)}
+                    style={{
+                      background: active ? '#fff5f5' : '#fff',
+                      border: active ? '2px solid #be0000' : '1px solid #ddd',
+                      borderRadius: '8px',
+                      padding: '14px 10px',
+                      fontSize: '13px',
+                      fontWeight: active ? 700 : 500,
+                      color: active ? '#be0000' : '#333',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {w} {active && '✓'}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Quantity Controls & Action Buttons */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center space-x-4">
-              <span className="text-xs font-bold text-gray-700 uppercase">Quantity:</span>
-              <div className="flex items-center border border-gray-300 rounded-xl bg-gray-50">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3.5 py-2 text-gray-600 hover:bg-gray-200 rounded-l-xl text-sm font-bold"
-                >
-                  -
-                </button>
-                <span className="px-4 font-bold text-sm text-gray-900">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-3.5 py-2 text-gray-600 hover:bg-gray-200 rounded-r-xl text-sm font-bold"
-                >
-                  +
-                </button>
+          {/* Subtotal */}
+          <p style={{ fontSize: '13px', color: '#333', marginBottom: '14px' }}>
+            Subtotal: <strong>Rs.{subtotal.toLocaleString()}.00</strong>
+          </p>
+
+          {/* Quantity + Add to Cart + Icons Row */}
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', background: '#fff' }}>
+              <button
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                style={{ padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '16px', color: '#333' }}
+              >
+                -
+              </button>
+              <span style={{ padding: '0 10px', fontSize: '14px', fontWeight: 600 }}>{quantity}</span>
+              <button
+                onClick={() => setQuantity(q => q + 1)}
+                style={{ padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '16px', color: '#333' }}
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              style={{
+                flex: 1,
+                background: '#1a1a1a',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '12px',
+                letterSpacing: '0.1em',
+                padding: '12px 16px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              <span>ADD TO CART</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: '11px', opacity: 0.9 }}>ابھی آرڈر کریں</span>
+            </button>
+
+            <button
+              onClick={() => toggleWishlist(product.id)}
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                border: '1px solid #ccc',
+                background: '#fff',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}
+            >
+              <Heart size={18} fill={isInWishlist(product.id) ? '#be0000' : 'none'} color={isInWishlist(product.id) ? '#be0000' : '#555'} />
+            </button>
+
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: product.name, url: window.location.href });
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                border: '1px solid #ccc',
+                background: '#fff',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}
+            >
+              <Share2 size={18} color="#555" />
+            </button>
+          </div>
+
+          {/* Buy It Now Button */}
+          <button
+            onClick={handleBuyNow}
+            style={{
+              width: '100%',
+              background: '#fff',
+              color: '#111',
+              fontWeight: 700,
+              fontSize: '13px',
+              letterSpacing: '0.1em',
+              padding: '14px 20px',
+              border: '1px solid #111',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              marginBottom: '24px'
+            }}
+          >
+            BUY IT NOW
+          </button>
+
+          {/* Delivery & Live Counter Card */}
+          <div style={{ background: '#fdfbfb', border: '1px solid #f0e6e6', borderRadius: '6px', padding: '16px', fontSize: '12px', color: '#444', lineHeight: 1.6, marginBottom: '24px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '8px' }}>
+              <Truck size={18} color="#111" style={{ flexShrink: 0 }} />
+              <div>
+                <strong>Delivery Time:</strong> Place your order within the next <strong>2 hours 33 minutes</strong> to get it soon! Your package is expected to arrive between <span style={{ textDecoration: 'underline' }}>Friday, 28 Aug</span> and <span style={{ textDecoration: 'underline' }}>Tuesday, 01 Sep</span>.
               </div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <button
-                onClick={handleAddToCart}
-                className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl flex items-center justify-center space-x-2 shadow-lg transition"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>ADD TO CART</span>
-              </button>
-
-              <button
-                onClick={handleBuyNow}
-                className="w-full bg-[#e95144] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-lg transition"
-              >
-                BUY IT NOW (COD)
-              </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666' }}>
+              <Eye size={16} color="#666" />
+              <span><strong>125 customers</strong> are viewing this product</span>
             </div>
           </div>
 
-          {/* Trust Guarantees */}
-          <div className="grid grid-cols-3 gap-3 border-t border-gray-200 pt-6 text-center text-[11px] text-gray-600 font-medium">
-            <div className="flex flex-col items-center space-y-1">
-              <Truck className="w-5 h-5 text-[#5e0d0c]" />
-              <span>Nationwide COD</span>
+        </div>
+      </div>
+
+      {/* RICH DESCRIPTION CONTENT SECTION BELOW PRODUCT DETAILS (MATCHING OFFICIAL SITE) */}
+      <div style={{ marginTop: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+        
+        {/* Description Tab Header */}
+        <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '32px', textAlign: 'center' }}>
+          <span style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#111',
+            paddingBottom: '12px',
+            display: 'inline-block',
+            borderBottom: '2px solid #111'
+          }}>
+            Description
+          </span>
+        </div>
+
+        {/* Description Body Content */}
+        <div style={{ maxWidth: '850px', margin: '0 auto', fontSize: '14px', color: '#333', lineHeight: 1.7 }}>
+          
+          <p style={{ textAlign: 'center', fontWeight: 700, fontSize: '13px', background: '#fafafa', padding: '12px', borderRadius: '4px', border: '1px solid #eee', marginBottom: '28px' }}>
+            Note: {product.name} 400G is Available in a Pouch, While 800G and 1200G are Available In Jars.
+          </p>
+
+          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: '#111', marginBottom: '14px' }}>
+            🍵 Buy {product.name} {product.urduName ? `– ${product.urduName}` : ''} Online in Pakistan | A Sweet & Tangy Desi Treat
+          </h3>
+
+          <h4 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: '#111', marginTop: '24px', marginBottom: '8px' }}>
+            What is {product.name}?
+          </h4>
+          <p style={{ color: '#555', marginBottom: '20px' }}>
+            Our <strong>{product.name}</strong> is a sweet, tangy delicacy made from the finest handpicked fresh ingredients and a traditional blend of natural sweeteners and warming spices. This timeless preserve delivers a burst of authentic flavor with every bite—perfect for enjoying as a standalone treat or a complement to your daily meals.
+          </p>
+
+          <h4 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: '#111', marginTop: '24px', marginBottom: '12px' }}>
+            Why It's Loved
+          </h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: '16px' }}>☑</span>
+              <span><strong>Rich in Natural Antioxidants & Vitamins</strong></span>
             </div>
-            <div className="flex flex-col items-center space-y-1">
-              <ShieldCheck className="w-5 h-5 text-[#5e0d0c]" />
-              <span>100% Fresh Ingredients</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: '16px' }}>☑</span>
+              <span><strong>Sweet, tangy, and full of authentic Pakistani desi flavor</strong></span>
             </div>
-            <div className="flex flex-col items-center space-y-1">
-              <RotateCcw className="w-5 h-5 text-[#5e0d0c]" />
-              <span>Taste Guarantee</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: '16px' }}>☑</span>
+              <span><strong>Perfect as a daily healthy snack or side dish</strong></span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: '16px' }}>☑</span>
+              <span><strong>A rejuvenating jar of tradition, crafted for everyday health</strong></span>
             </div>
           </div>
+
+          <h4 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 700, color: '#111', marginTop: '24px', marginBottom: '12px' }}>
+            Best Enjoyed With
+          </h4>
+          <ul style={{ listStyleType: 'disc', paddingLeft: '20px', color: '#555', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <li>Paratha or roti for a classic breakfast pairing</li>
+            <li>As a side with traditional desi thalis or festive meals</li>
+          </ul>
 
         </div>
 
       </div>
 
-      {/* Middle Section: Tabbed Information */}
-      <section className="bg-gray-50 p-6 md:p-8 rounded-3xl border border-gray-200 shadow-xs">
-        
-        {/* Tab Headers */}
-        <div className="flex border-b border-gray-300 space-x-6 overflow-x-auto pb-2">
-          {[
-            { id: 'description', label: 'DESCRIPTION' },
-            { id: 'ingredients', label: 'INGREDIENTS' },
-            { id: 'benefits', label: 'HEALTH BENEFITS' },
-            { id: 'usage', label: 'STORAGE & USAGE' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`font-bold text-xs uppercase tracking-wider pb-3 border-b-2 transition whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'border-[#5e0d0c] text-[#5e0d0c]'
-                  : 'border-transparent text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content Panels */}
-        <div className="py-6 text-xs md:text-sm text-gray-700 leading-relaxed">
-          {activeTab === 'description' && (
-            <div className="space-y-4">
-              <p className="text-gray-800 font-medium">{product.description}</p>
-              <p>
-                Our <strong>{product.name}</strong> is crafted according to traditional home recipes using hand-picked fresh ingredients, cold-pressed mustard oil, and authentic aromatic spices. Prepared in small hygienic batches without artificial colors or synthetic preservatives.
-              </p>
-            </div>
-          )}
-
-          {activeTab === 'ingredients' && (
-            <div className="space-y-3">
-              <h4 className="font-bold text-gray-900 uppercase">Natural Ingredients:</h4>
-              <p className="bg-white p-4 rounded-xl border border-gray-200 font-medium text-gray-800">
-                {product.ingredients}
-              </p>
-            </div>
-          )}
-
-          {activeTab === 'benefits' && (
-            <div className="space-y-3">
-              <h4 className="font-bold text-gray-900 uppercase">Key Wellness Benefits:</h4>
-              <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {product.benefits.split('.').filter(Boolean).map((benefit, i) => (
-                  <li key={i} className="font-medium">{benefit.trim()}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {activeTab === 'usage' && (
-            <div className="space-y-3 text-gray-700">
-              <h4 className="font-bold text-gray-900 uppercase">Storage & Shelf Life Instructions:</h4>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>Keep jar in a cool, dry place away from direct sunlight.</li>
-                <li>Always use a clean, completely dry spoon when serving.</li>
-                <li>Do not add water or moisture to the jar to preserve fresh taste.</li>
-                <li>Shelf Life: 12 Months from packing date.</li>
-              </ul>
-            </div>
-          )}
-        </div>
-
-      </section>
-
       {/* Customer Reviews Section */}
-      <section className="bg-white p-6 md:p-10 rounded-3xl border border-gray-200 space-y-8">
-        
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
-          <div>
-            <h3 className="text-xl font-bold font-serif text-gray-900 uppercase tracking-wide">
-              Customer Reviews ({product.reviewsCount})
-            </h3>
-            <div className="flex items-center space-x-2 mt-1">
-              <div className="flex text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400" />
-                ))}
+      <div id="customer-reviews-section" style={{ marginTop: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, textAlign: 'center', marginBottom: '24px' }}>
+          Customer Reviews
+        </h2>
+
+        {/* Breakdown bar box */}
+        <div style={{ maxWidth: '600px', margin: '0 auto 40px auto', textAlign: 'center' }}>
+          <div style={{ color: '#be0000', fontSize: '20px', marginBottom: '4px' }}>★★★★★</div>
+          <p style={{ fontSize: '13px', color: '#333', fontWeight: 600, marginBottom: '16px' }}>
+            4.87 out of 5 based on 94 reviews
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '400px', margin: '0 auto' }}>
+            {[
+              { stars: '★★★★★', count: 83, pct: 88 },
+              { stars: '★★★★☆', count: 10, pct: 10 },
+              { stars: '★★★☆☆', count: 1, pct: 2 },
+              { stars: '★★☆☆☆', count: 0, pct: 0 },
+              { stars: '★☆☆☆☆', count: 0, pct: 0 },
+            ].map((row, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
+                <span style={{ color: '#be0000', width: '60px', textAlign: 'right' }}>{row.stars}</span>
+                <div style={{ flex: 1, height: '10px', background: '#eee', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{ width: `${row.pct}%`, height: '100%', background: '#5e0d0c' }} />
+                </div>
+                <span style={{ width: '20px', color: '#777', textAlign: 'left' }}>{row.count}</span>
               </div>
-              <span className="text-xs font-bold text-gray-800">{product.rating} out of 5 based on customer ratings</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Individual Reviews list */}
+        <div style={{ maxWidth: '750px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {[
+            {
+              author: 'Faizan Ali',
+              date: '07/18/2026',
+              title: 'Good taste and maza a gia thanks for sughat and',
+              body: 'Good taste and maza a gia thanks for sughat and TCS first service received just 2 days working'
+            },
+            {
+              author: 'Naveed iqbal khan Khan',
+              date: '07/13/2026',
+              title: 'Good in',
+              body: 'Good in taste'
+            },
+            {
+              author: 'Naveed Taj Ghauri',
+              date: '07/09/2026',
+              title: 'Excellent by all means',
+              body: 'Excellent by all means. 10/10'
+            }
+          ].map((rev, idx) => (
+            <div key={idx} style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div style={{ color: '#be0000', fontSize: '14px' }}>★★★★★</div>
+                <span style={{ fontSize: '11px', color: '#999' }}>{rev.date}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span style={{ fontWeight: 700, fontSize: '13px', color: '#111' }}>{rev.author}</span>
+                <span style={{ background: '#5e0d0c', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: '2px' }}>
+                  ✓ Verified
+                </span>
+              </div>
+              <p style={{ fontWeight: 700, fontSize: '13px', color: '#222', marginBottom: '4px' }}>{rev.title}</p>
+              <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.5 }}>{rev.body}</p>
+            </div>
+          ))}
+
+          {/* Pagination */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', fontSize: '13px', color: '#be0000', fontWeight: 700, marginTop: '10px' }}>
+            <span style={{ color: '#111', cursor: 'default' }}>1</span>
+            <span style={{ cursor: 'pointer' }}>2</span>
+            <span style={{ cursor: 'pointer' }}>3</span>
+            <span style={{ cursor: 'pointer' }}>&gt;</span>
+            <span style={{ cursor: 'pointer' }}>&raquo;</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Purchase Bar at Bottom */}
+      {showStickyBar && (
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: '#fff',
+          borderTop: '1px solid #ddd',
+          padding: '10px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          zIndex: 999,
+          boxShadow: '0 -4px 12px rgba(0,0,0,0.08)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img src={selectedImage} alt={product.name} style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: '4px' }} />
+            <div>
+              <p style={{ fontSize: '12px', fontWeight: 700, color: '#111', margin: 0 }}>{product.name}</p>
+              <p style={{ fontSize: '11px', margin: 0 }}>
+                <span style={{ textDecoration: 'line-through', color: '#888', marginRight: '6px' }}>Rs.{originalPrice.toLocaleString()}.00</span>
+                <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{currentPrice.toLocaleString()}.00</span>
+              </p>
             </div>
           </div>
 
-          <button
-            onClick={() => setShowReviewForm(!showReviewForm)}
-            className="bg-[#5e0d0c] hover:bg-[#430807] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-xl transition"
-          >
-            {showReviewForm ? 'Cancel Review' : 'Write a Review'}
-          </button>
-        </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <select
+              value={selectedWeight}
+              onChange={e => setSelectedWeight(e.target.value)}
+              style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '6px 12px', fontSize: '12px', background: '#fff' }}
+            >
+              {defaultWeights.map(w => <option key={w} value={w}>{w}</option>)}
+            </select>
 
-        {/* Review Form Drawer */}
-        {showReviewForm && (
-          <form onSubmit={e => { e.preventDefault(); alert('Thank you! Your review has been submitted for approval.'); setShowReviewForm(false); }} className="bg-gray-50 p-6 rounded-2xl border space-y-4 text-xs">
-            <h4 className="font-bold text-sm text-gray-900">Write Your Verified Customer Review</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input type="text" required placeholder="Your Name" className="p-3 border rounded-xl bg-white" />
-              <input type="email" required placeholder="Your Email Address" className="p-3 border rounded-xl bg-white" />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">Rating:</label>
-              <select className="p-3 border rounded-xl bg-white w-full sm:w-48">
-                <option>★★★★★ (5/5 Excellent)</option>
-                <option>★★★★☆ (4/5 Very Good)</option>
-                <option>★★★☆☆ (3/5 Good)</option>
-              </select>
-            </div>
-            <textarea rows={3} required placeholder="Write your feedback about taste, quality, packaging, and delivery..." className="w-full p-3 border rounded-xl bg-white" />
-            <button type="submit" className="bg-[#5e0d0c] text-white font-bold px-6 py-2.5 rounded-xl uppercase tracking-wider">
-              Submit Review
+            <button
+              onClick={handleAddToCart}
+              style={{
+                background: '#1a1a1a',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '11px',
+                letterSpacing: '0.08em',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textTransform: 'uppercase'
+              }}
+            >
+              ADD TO CART ابھی آرڈر کریں
             </button>
-          </form>
-        )}
-
-        {/* Review Cards */}
-        <div className="space-y-4 divide-y divide-gray-100">
-          {[
-            {
-              name: 'Dr. Tariq Mahmood (Islamabad)',
-              rating: 5,
-              date: '2 days ago',
-              comment: 'Authentic taste just like homemade! Packed very securely in glass jar without any oil leakage. Will order again!'
-            },
-            {
-              name: 'Fatima Zafar (Lahore)',
-              rating: 5,
-              date: '1 week ago',
-              comment: 'Great quality and fast delivery. Sarson saag pickle had pure desi mustard oil aroma. Highly recommended!'
-            },
-            {
-              name: 'Usman Ghani (Karachi)',
-              rating: 5,
-              date: '2 weeks ago',
-              comment: 'Best quality pickles in Pakistan. Delivery was super fast via COD.'
-            }
-          ].map((rev, idx) => (
-            <div key={idx} className="pt-4 first:pt-0 space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold text-gray-900">{rev.name}</span>
-                  <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
-                    <Check className="w-3 h-3" />
-                    <span>Verified Buyer</span>
-                  </span>
-                </div>
-                <span className="text-gray-400">{rev.date}</span>
-              </div>
-              <div className="flex text-yellow-400">
-                {[...Array(rev.rating)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-yellow-400" />
-                ))}
-              </div>
-              <p className="text-xs text-gray-700 leading-relaxed font-medium">{rev.comment}</p>
-            </div>
-          ))}
+          </div>
         </div>
-
-      </section>
+      )}
 
     </div>
   );

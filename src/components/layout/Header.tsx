@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Heart, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export default function Header() {
@@ -55,8 +55,8 @@ export default function Header() {
               WhatsApp & Cell 0518300036
             </div>
 
-            {/* Actions Row */}
-            <div className="flex items-center space-x-4 md:space-x-6 text-sm">
+            {/* Actions Row: Search, Shopping Cart, Wishlist, Sign in */}
+            <div className="flex items-center space-x-3 md:space-x-5 text-sm">
               
               {/* Search Bar Trigger */}
               <button 
@@ -70,7 +70,7 @@ export default function Header() {
               {/* Shopping Cart Button */}
               <button 
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center space-x-2 text-[#5e0d0c] font-bold text-xs hover:opacity-80 transition"
+                className="flex items-center space-x-1.5 text-[#5e0d0c] font-bold text-xs hover:opacity-80 transition"
               >
                 <div className="relative">
                   <ShoppingBag className="w-5 h-5" />
@@ -86,7 +86,7 @@ export default function Header() {
               {/* Wishlist Link */}
               <Link 
                 href="/wishlist" 
-                className="flex items-center space-x-1 text-[#5e0d0c] font-semibold text-xs hover:opacity-80 transition"
+                className="flex items-center space-x-1.5 text-[#5e0d0c] font-semibold text-xs hover:opacity-80 transition"
               >
                 <div className="relative">
                   <Heart className="w-5 h-5" />
@@ -98,6 +98,16 @@ export default function Header() {
                 </div>
                 <span className="hidden sm:inline">Wishlist</span>
               </Link>
+
+              {/* Sign in Link connected to /account */}
+              <Link 
+                href="/account" 
+                className="flex items-center space-x-1.5 text-[#5e0d0c] font-bold text-xs hover:opacity-80 transition border-l border-gray-200 pl-3 md:pl-4"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">Sign in</span>
+              </Link>
+
             </div>
           </div>
 

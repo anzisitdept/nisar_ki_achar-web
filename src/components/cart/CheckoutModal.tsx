@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle, Truck, ShoppingBag, ShieldCheck } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { saveOrderToFirestore } from '@/lib/firestoreServices';
 
 export default function CheckoutModal() {
   const {
@@ -24,20 +25,43 @@ export default function CheckoutModal() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!isCheckoutOpen) return null;
 
   const deliveryFee = amountNeededForFreeShipping === 0 ? 0 : 200;
   const grandTotal = subtotal + deliveryFee;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.phone || !formData.address) {
       alert('Please fill in all required shipping details.');
       return;
     }
+
+    setIsSaving(true);
     const generatedId = `SEK-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const orderPayload = {
+      orderId: generatedId,
+      customerName: formData.fullName,
+      customerEmail: '',
+      customerPhone: formData.phone,
+      shippingAddress: formData.address,
+      city: formData.city,
+      items: cart,
+      subtotal,
+      shippingFee: deliveryFee,
+      totalAmount: grandTotal,
+      paymentMethod: 'Cash on Delivery (COD)',
+      orderStatus: 'Pending' as const
+    };
+
+    // Save to Firestore in real-time for Admin Panel
+    await saveOrderToFirestore(orderPayload);
+
     setOrderId(generatedId);
+    setIsSaving(false);
     setIsSubmitted(true);
     clearCart();
   };
@@ -48,7 +72,7 @@ export default function CheckoutModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto font-sans">
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden my-8">
         
         {/* Header */}
@@ -104,7 +128,7 @@ export default function CheckoutModal() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href={`https://wa.me/923000000000?text=Hi%20Soghat-e-Khas,%20I%20placed%20order%20${orderId}`}
+                href={`https://wa.me/923052396699?text=Hi%20Soghat-e-Khas,%20I%20placed%20order%20${orderId}`}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg flex items-center justify-center space-x-2 transition"
@@ -244,9 +268,10 @@ export default function CheckoutModal() {
 
               <button
                 type="submit"
-                className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow-lg transition-all"
+                disabled={isSaving}
+                className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow-lg transition-all disabled:opacity-50"
               >
-                PLACE CONFIRMED COD ORDER
+                {isSaving ? 'CONFIRMING ORDER...' : 'PLACE CONFIRMED COD ORDER'}
               </button>
             </div>
 
