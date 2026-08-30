@@ -49,7 +49,14 @@ export default function CheckoutModal() {
       customerPhone: formData.phone,
       shippingAddress: formData.address,
       city: formData.city,
-      items: cart,
+      items: cart.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        selectedWeight: item.selectedWeight,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image
+      })),
       subtotal,
       shippingFee: deliveryFee,
       totalAmount: grandTotal,

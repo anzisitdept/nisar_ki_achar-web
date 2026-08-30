@@ -9,8 +9,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import ReviewsWidget from '@/components/layout/ReviewsWidget';
-import { PRODUCTS, getProductsByCategory, Product } from '@/data/products';
-import { CATEGORIES, getCategoryBySlug } from '@/data/categories';
+import { Product } from '@/types';
+import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
 
 /* ─── Review Carousel ────────────────────────────────── */
@@ -144,13 +144,25 @@ function CategoryInner() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { products, categories } = useStoreData();
 
   const categorySlug = (params?.category as string) || 'murabba';
-  const categoryData = getCategoryBySlug(categorySlug);
+  const categoryData = categories.find(c => c.slug === categorySlug || c.id === categorySlug);
   const categoryTitle = categoryData ? categoryData.name.split('(')[0].trim() : categorySlug.replace(/-/g, ' ').toUpperCase();
 
-  const categoryProducts = getProductsByCategory(categorySlug);
-  const displayProductsList = categoryProducts.length > 0 ? categoryProducts : PRODUCTS.filter(p => p.category === categorySlug);
+  // Dynamically filter products by category
+  let categoryProducts: Product[] = [];
+  if (categorySlug === 'all' || categorySlug === 'all-products') {
+    categoryProducts = products;
+  } else if (categorySlug === 'best-selling' || categorySlug === 'best-sellers' || categorySlug === 'best-selling-pickles') {
+    categoryProducts = products.filter(p => p.isBestSeller);
+  } else if (categorySlug === 'new-arrivals') {
+    categoryProducts = products.filter(p => p.isNew);
+  } else {
+    categoryProducts = products.filter(p => p.category.toLowerCase() === categorySlug.toLowerCase());
+  }
+
+  const displayProductsList = categoryProducts.length > 0 ? categoryProducts : products.filter(p => p.category === categorySlug);
 
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'best-selling');
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -162,7 +174,7 @@ function CategoryInner() {
   else if (sortBy === 'title') sorted.sort((a, b) => a.name.localeCompare(b.name));
 
   const gridCols = viewMode === 'grid4' ? 4 : viewMode === 'grid3' ? 3 : viewMode === 'grid2' ? 2 : 1;
-  const bestSellers = PRODUCTS.filter(p => p.isBestSeller).slice(0, 3);
+  const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
 
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
@@ -181,7 +193,7 @@ function CategoryInner() {
           
           <SideSection title="Categories">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {CATEGORIES.map(cat => (
+              {categories.map(cat => (
                 <Link
                   key={cat.id}
                   href={`/collections/${cat.slug}`}

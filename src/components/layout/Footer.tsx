@@ -84,8 +84,6 @@ export default function Footer() {
                 <li><Link href="/pages/privacy-policy" className="hover:underline">Privacy Policy</Link></li>
                 <li><Link href="/pages/frequently-asked-questions" className="hover:underline">FAQ's</Link></li>
                 <li><Link href="/pages/cookie-policy" className="hover:underline">Cookie Policy</Link></li>
-                <li><Link href="/pages/blogs" className="hover:underline">Blogs</Link></li>
-                <li><Link href="/pages/careers" className="hover:underline">Careers</Link></li>
                 <li><Link href="/pages/contact-us" className="hover:underline">Contact Us</Link></li>
               </ul>
             </div>
@@ -185,6 +183,15 @@ export default function Footer() {
                   <span>7 Days Easy Returns & Exchange Available</span>
                 </li>
               </ul>
+
+              {/* Developed By ANZI & Co. watermark */}
+              <div className="mt-6 pt-5 border-t border-white/20">
+                <p className="text-[10px] text-gray-300/70 mb-2">Developed By</p>
+                <div className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-full bg-[#e6b800] text-[#4a0808] flex items-center justify-center font-bold text-sm">A</span>
+                  <span className="font-bold tracking-wide text-[#e6b800]">ANZI &amp; Co.</span>
+                </div>
+              </div>
             </div>
 
           </div>

@@ -8,8 +8,8 @@ import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
-import { PRODUCTS, Product } from '@/data/products';
-import { CATEGORIES } from '@/data/categories';
+import { Product } from '@/types';
+import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
 
 /* ─── Review Carousel ────────────────────────────────── */
@@ -243,6 +243,7 @@ function GridIcon({ mode, active }: { mode: string; active: boolean }) {
 function AllProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { products, categories } = useStoreData();
 
   const paramSort = searchParams.get('sort') || 'featured';
   const paramCategory = searchParams.get('category');
@@ -254,8 +255,8 @@ function AllProductsContent() {
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [viewMode, setViewMode] = useState<'grid4' | 'grid3' | 'grid2' | 'list'>('grid4');
 
-  const allPrices = PRODUCTS.map(p => p.price);
-  const globalMax = Math.max(...allPrices);
+  const allPrices = products.map(p => p.price);
+  const globalMax = allPrices.length > 0 ? Math.max(...allPrices) : 4989;
 
   const updateUrl = (cats: string[], sortVal: string) => {
     const params = new URLSearchParams();
@@ -272,9 +273,14 @@ function AllProductsContent() {
     updateUrl(updated, sortBy);
   };
 
-  let filtered = PRODUCTS.filter(p => {
+  let filtered = products.filter(p => {
     if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false;
     if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
+    
+    // Dynamic stock availability filter
+    if (availability.inStock && p.inStock === false) return false;
+    if (availability.outStock && p.inStock !== false) return false;
+    
     return true;
   });
 
@@ -284,12 +290,12 @@ function AllProductsContent() {
   else if (sortBy === 'title') filtered.sort((a, b) => a.name.localeCompare(b.name));
 
   const displayed = filtered.slice(0, itemsPerPage);
-  const bestSellers = PRODUCTS.filter(p => p.isBestSeller).slice(0, 3);
+  const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
 
   const gridCols = viewMode === 'grid4' ? 4 : viewMode === 'grid3' ? 3 : viewMode === 'grid2' ? 2 : 1;
 
-  const inStockCount = PRODUCTS.length;
-  const outStockCount = 5;
+  const inStockCount = products.filter(p => p.inStock !== false).length;
+  const outStockCount = products.filter(p => p.inStock === false).length;
 
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
@@ -308,7 +314,7 @@ function AllProductsContent() {
 
           <SideSection title="Categories">
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {CATEGORIES.map(cat => (
+              {categories.map(cat => (
                 <label
                   key={cat.id}
                   style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 0', cursor: 'pointer', fontSize: '12px', color: '#333' }}

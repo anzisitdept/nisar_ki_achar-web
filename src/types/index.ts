@@ -10,6 +10,7 @@ export interface Product {
   discountBadge: string;
   isBestSeller: boolean;
   isNew: boolean;
+  inStock?: boolean; // Synced with Admin panel (optional for local fallback)
   image: string;
   hoverImage: string;
   images: string[];
@@ -20,9 +21,10 @@ export interface Product {
   benefits: string;
   rating: number;
   reviewsCount: number;
+  updatedAt?: any; // Synced with Admin panel
 }
 
-export interface Collection {
+export interface Category {
   id: string;
   slug: string;
   name: string;
@@ -31,6 +33,9 @@ export interface Collection {
   image: string;
   itemCount: number;
 }
+
+// Keep Collection as an alias to Category for backward compatibility
+export type Collection = Category;
 
 export interface CartItem {
   cartId: string;
@@ -45,18 +50,6 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface Review {
-  id: string;
-  author: string;
-  location: string;
-  rating: number;
-  date: string;
-  comment: string;
-  verified: boolean;
-  productSlug?: string;
-  productName?: string;
-}
-
 export interface NavigationItem {
   label: string;
   href: string;
@@ -68,4 +61,77 @@ export interface FilterState {
   maxPrice?: number;
   sortBy?: string;
   inStockOnly?: boolean;
+}
+
+// ─────────────────────────────────────────────
+// Admin Sync Types
+// ─────────────────────────────────────────────
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  selectedWeight: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+export type OrderStatus = 'Pending' | 'Processing' | 'Dispatched' | 'Delivered' | 'Cancelled';
+
+export interface Order {
+  id: string;
+  orderId: string;
+  createdAt: any;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  shippingAddress: string;
+  city: string;
+  items: OrderItem[];
+  subtotal: number;
+  shippingFee: number;
+  totalAmount: number;
+  paymentMethod: string;
+  orderStatus: OrderStatus;
+}
+
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Review {
+  id: string;
+  reviewId?: string;
+  productId?: string;
+  author: string;
+  location?: string;
+  rating: number;
+  date?: string;
+  comment?: string;
+  verified?: boolean;
+  productSlug?: string;
+  productName?: string;
+  title?: string;
+  body?: string;
+  isVerified?: boolean;
+  status?: ReviewStatus;
+  createdAt?: any;
+}
+
+export interface HeroSlide {
+  id: string;
+  desktopImage: string;
+  mobileImage: string;
+  alt: string;
+}
+
+export interface Banner {
+  id: string;
+  image: string;
+  link: string;
+  alt: string;
+}
+
+export interface StoreContent {
+  topBarMessages: string[];
+  heroSlides: HeroSlide[];
+  midBanners: Banner[];
 }

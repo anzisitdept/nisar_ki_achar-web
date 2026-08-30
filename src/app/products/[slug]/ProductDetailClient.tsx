@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Heart, Share2, Eye, Truck, MessageCircle, Check } from 'lucide-react';
-import { Product } from '@/data/products';
+import { Product, Review } from '@/types';
 import { useCart } from '@/context/CartContext';
+import { subscribeProductReviews, saveReviewToFirestore } from '@/lib/firestoreServices';
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const { addToCart, toggleWishlist, isInWishlist, setIsCheckoutOpen } = useCart();
@@ -24,6 +25,48 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(product.images[0] || product.image);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
+  // Dynamic reviews states
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [writeReviewOpen, setWriteReviewOpen] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, title: '', body: '' });
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [submitSuccessMsg, setSubmitSuccessMsg] = useState<string | null>(null);
+
+  // Subscribe to approved reviews for this product from Firebase
+  useEffect(() => {
+    const unsub = subscribeProductReviews(product.id, (dynamicReviews) => {
+      setReviews(dynamicReviews);
+    });
+    return () => unsub();
+  }, [product.id]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.author.trim() || !reviewForm.title.trim() || !reviewForm.body.trim()) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    setIsSubmittingReview(true);
+    const res = await saveReviewToFirestore({
+      productId: product.id,
+      author: reviewForm.author,
+      rating: reviewForm.rating,
+      title: reviewForm.title,
+      body: reviewForm.body,
+      isVerified: false,
+      status: 'pending'
+    });
+    setIsSubmittingReview(false);
+    if (res.success) {
+      setSubmitSuccessMsg('Shukriya! Your review has been submitted for moderation and will appear once approved by the administrator.');
+      setReviewForm({ author: '', rating: 5, title: '', body: '' });
+      setTimeout(() => setSubmitSuccessMsg(null), 8000);
+      setWriteReviewOpen(false);
+    } else {
+      alert('Error submitting review. Please try again.');
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 450) {
@@ -37,10 +80,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   }, []);
 
   const handleAddToCart = () => {
+    if (product.inStock === false) {
+      alert('This product is currently out of stock.');
+      return;
+    }
     addToCart(product, selectedWeight, quantity);
   };
 
   const handleBuyNow = () => {
+    if (product.inStock === false) {
+      alert('This product is currently out of stock.');
+      return;
+    }
     addToCart(product, selectedWeight, quantity);
     setIsCheckoutOpen(true);
   };
@@ -66,6 +117,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             />
             {/* Badges */}
             <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', flexDirection: 'column', gap: '6px', zIndex: 2 }}>
+              {product.inStock === false && (
+                <span style={{ background: '#be0000', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '2px' }}>
+                  OUT OF STOCK
+                </span>
+              )}
               {product.discountBadge && (
                 <span style={{ background: '#e95144', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '2px' }}>
                   {product.discountBadge}
@@ -235,9 +291,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
             <button
               onClick={handleAddToCart}
+              disabled={product.inStock === false}
               style={{
                 flex: 1,
-                background: '#1a1a1a',
+                background: product.inStock === false ? '#cccccc' : '#1a1a1a',
                 color: '#fff',
                 fontWeight: 700,
                 fontSize: '12px',
@@ -245,7 +302,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 padding: '12px 16px',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
                 textTransform: 'uppercase',
                 display: 'flex',
                 alignItems: 'center',
@@ -253,8 +310,14 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 gap: '8px'
               }}
             >
-              <span>ADD TO CART</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: '11px', opacity: 0.9 }}>ابھی آرڈر کریں</span>
+              {product.inStock === false ? (
+                <span>OUT OF STOCK</span>
+              ) : (
+                <>
+                  <span>ADD TO CART</span>
+                  <span style={{ fontFamily: 'sans-serif', fontSize: '11px', opacity: 0.9 }}>ابھی آرڈر کریں</span>
+                </>
+              )}
             </button>
 
             <button
@@ -304,22 +367,23 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {/* Buy It Now Button */}
           <button
             onClick={handleBuyNow}
+            disabled={product.inStock === false}
             style={{
               width: '100%',
-              background: '#fff',
-              color: '#111',
+              background: product.inStock === false ? '#f5f5f5' : '#fff',
+              color: product.inStock === false ? '#888' : '#111',
               fontWeight: 700,
               fontSize: '13px',
               letterSpacing: '0.1em',
               padding: '14px 20px',
-              border: '1px solid #111',
+              border: product.inStock === false ? '1px solid #ccc' : '1px solid #111',
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: product.inStock === false ? 'not-allowed' : 'pointer',
               textTransform: 'uppercase',
               marginBottom: '24px'
             }}
           >
-            BUY IT NOW
+            {product.inStock === false ? 'OUT OF STOCK (بغیر اسٹاک)' : 'BUY IT NOW'}
           </button>
 
           {/* Delivery & Live Counter Card */}
@@ -419,7 +483,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         <div style={{ maxWidth: '600px', margin: '0 auto 40px auto', textAlign: 'center' }}>
           <div style={{ color: '#be0000', fontSize: '20px', marginBottom: '4px' }}>★★★★★</div>
           <p style={{ fontSize: '13px', color: '#333', fontWeight: 600, marginBottom: '16px' }}>
-            4.87 out of 5 based on 94 reviews
+            {reviews.length > 0 ? (
+              `${(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(2)} out of 5 based on ${reviews.length} reviews`
+            ) : (
+              '4.87 out of 5 based on 94 reviews'
+            )}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '400px', margin: '0 auto' }}>
@@ -441,38 +509,173 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           </div>
         </div>
 
+        {/* Dynamic Write a Review Button and Form */}
+        <div style={{ maxWidth: '750px', margin: '0 auto 30px auto', textAlign: 'center' }}>
+          {submitSuccessMsg && (
+            <div style={{ background: '#d4edda', color: '#155724', padding: '12px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, marginBottom: '20px', border: '1px solid #c3e6cb' }}>
+              {submitSuccessMsg}
+            </div>
+          )}
+
+          {!writeReviewOpen ? (
+            <button
+              onClick={() => setWriteReviewOpen(true)}
+              style={{
+                background: '#5e0d0c',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '12px',
+                letterSpacing: '0.08em',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textTransform: 'uppercase'
+              }}
+            >
+              Write A Review (رائے لکھیں)
+            </button>
+          ) : (
+            <form onSubmit={handleReviewSubmit} style={{ background: '#fcfcfc', border: '1px solid #eee', padding: '24px', borderRadius: '8px', textAlign: 'left', marginTop: '20px' }}>
+              <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: 700, marginBottom: '16px', color: '#111' }}>
+                Write a Review
+              </h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '5px', color: '#333' }}>Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewForm.author}
+                    onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value })}
+                    style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '13px' }}
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '5px', color: '#333' }}>Rating *</label>
+                  <select
+                    value={reviewForm.rating}
+                    onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '13px', background: '#fff' }}
+                  >
+                    <option value="5">★★★★★ (5 Stars)</option>
+                    <option value="4">★★★★☆ (4 Stars)</option>
+                    <option value="3">★★★☆☆ (3 Stars)</option>
+                    <option value="2">★★☆☆☆ (2 Stars)</option>
+                    <option value="1">★☆☆☆☆ (1 Star)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '5px', color: '#333' }}>Review Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={reviewForm.title}
+                  onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
+                  style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '13px' }}
+                  placeholder="Give your review a title"
+                />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '5px', color: '#333' }}>Review Body *</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={reviewForm.body}
+                  onChange={(e) => setReviewForm({ ...reviewForm, body: e.target.value })}
+                  style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '13px', resize: 'vertical' }}
+                  placeholder="Write your comments here..."
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  style={{
+                    background: '#5e0d0c',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: isSubmittingReview ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setWriteReviewOpen(false)}
+                  style={{
+                    background: '#fff',
+                    color: '#555',
+                    fontWeight: 600,
+                    fontSize: '12px',
+                    padding: '10px 20px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+
         {/* Individual Reviews list */}
         <div style={{ maxWidth: '750px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {[
+          {(reviews.length > 0 ? reviews : [
             {
+              id: 'fallback-rev-1',
               author: 'Faizan Ali',
-              date: '07/18/2026',
+              createdAt: '07/18/2026',
+              rating: 5,
               title: 'Good taste and maza a gia thanks for sughat and',
-              body: 'Good taste and maza a gia thanks for sughat and TCS first service received just 2 days working'
+              body: 'Good taste and maza a gia thanks for sughat and TCS first service received just 2 days working',
+              isVerified: true
             },
             {
+              id: 'fallback-rev-2',
               author: 'Naveed iqbal khan Khan',
-              date: '07/13/2026',
+              createdAt: '07/13/2026',
+              rating: 5,
               title: 'Good in',
-              body: 'Good in taste'
+              body: 'Good in taste',
+              isVerified: true
             },
             {
+              id: 'fallback-rev-3',
               author: 'Naveed Taj Ghauri',
-              date: '07/09/2026',
+              createdAt: '07/09/2026',
+              rating: 5,
               title: 'Excellent by all means',
-              body: 'Excellent by all means. 10/10'
+              body: 'Excellent by all means. 10/10',
+              isVerified: true
             }
-          ].map((rev, idx) => (
-            <div key={idx} style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '20px' }}>
+          ]).map((rev, idx) => (
+            <div key={rev.id || idx} style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <div style={{ color: '#be0000', fontSize: '14px' }}>★★★★★</div>
-                <span style={{ fontSize: '11px', color: '#999' }}>{rev.date}</span>
+                <div style={{ color: '#be0000', fontSize: '14px' }}>
+                  {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                </div>
+                <span style={{ fontSize: '11px', color: '#999' }}>{rev.createdAt}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <span style={{ fontWeight: 700, fontSize: '13px', color: '#111' }}>{rev.author}</span>
-                <span style={{ background: '#5e0d0c', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: '2px' }}>
-                  ✓ Verified
-                </span>
+                {rev.isVerified && (
+                  <span style={{ background: '#5e0d0c', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: '2px' }}>
+                    ✓ Verified
+                  </span>
+                )}
               </div>
               <p style={{ fontWeight: 700, fontSize: '13px', color: '#222', marginBottom: '4px' }}>{rev.title}</p>
               <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.5 }}>{rev.body}</p>
@@ -528,8 +731,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
             <button
               onClick={handleAddToCart}
+              disabled={product.inStock === false}
               style={{
-                background: '#1a1a1a',
+                background: product.inStock === false ? '#cccccc' : '#1a1a1a',
                 color: '#fff',
                 fontWeight: 700,
                 fontSize: '11px',
@@ -537,11 +741,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 padding: '10px 20px',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
                 textTransform: 'uppercase'
               }}
             >
-              ADD TO CART ابھی آرڈر کریں
+              {product.inStock === false ? 'OUT OF STOCK' : 'ADD TO CART'}
             </button>
           </div>
         </div>

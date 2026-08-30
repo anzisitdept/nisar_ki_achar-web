@@ -4,8 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
-import { PRODUCTS, Product } from '@/data/products';
-import { useCart } from '@/hooks/useCart';
+import { Product } from '@/types';
+import { useStoreData } from '@/context/StoreDataContext';
+import { useCart } from '@/context/CartContext';
 
 export default function SearchModal() {
   const { isSearchOpen, setIsSearchOpen, addToCart } = useCart();
@@ -36,6 +37,8 @@ export default function SearchModal() {
     };
   }, [isSearchOpen, setIsSearchOpen]);
 
+  const { products } = useStoreData();
+
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -44,8 +47,8 @@ export default function SearchModal() {
     }
     const q = query.toLowerCase();
 
-    // Filter matching products
-    const filtered = PRODUCTS.filter(
+    // Filter matching products from dynamic database
+    const filtered = products.filter(
       p =>
         p.name.toLowerCase().includes(q) ||
         p.urduName.toLowerCase().includes(q) ||

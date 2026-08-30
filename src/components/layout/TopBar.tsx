@@ -2,24 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { subscribeTopBarMessages } from '@/lib/firestoreServices';
+import { useStoreData } from '@/context/StoreDataContext';
 
 export default function TopBar() {
-  const [messages, setMessages] = useState<string[]>([
-    'GET 5% OFF ON ORDERS WITH ADVANCE PAYMENT.',
-    '⚡ FREE NATIONWIDE SHIPPING ON ORDERS OVER RS. 2,999',
-    '🎁 100% PURE & HOMEMADE DESI QUALITY GUARANTEED'
-  ]);
+  const { storeContent } = useStoreData();
+  const messages = storeContent.topBarMessages;
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const unsub = subscribeTopBarMessages((dynamicMsgs) => {
-      if (dynamicMsgs && dynamicMsgs.length > 0) {
-        setMessages(dynamicMsgs);
-      }
-    });
-    return () => unsub();
-  }, []);
 
   useEffect(() => {
     if (messages.length <= 1) return;

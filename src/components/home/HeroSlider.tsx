@@ -4,13 +4,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const heroImages = [
-  { desktop: 'https://soghatekhas.com/cdn/shop/files/MAINN_WEB.jpg?v=1763724941&width=3840', mobile: 'https://soghatekhas.com/cdn/shop/files/MAIN.jpg?v=1763724992&width=750' },
-  { desktop: 'https://soghatekhas.com/cdn/shop/files/Banner-01.jpg?v=1776446341&width=3840', mobile: 'https://soghatekhas.com/cdn/shop/files/Mobile_banner-01.jpg?v=1776446397&width=750' },
-  { desktop: 'https://soghatekhas.com/cdn/shop/files/Banner-02_1.jpg?v=1786468968&width=3840', mobile: 'https://soghatekhas.com/cdn/shop/files/Mobile_banner-02_4.jpg?v=1786468989&width=750' },
-];
+import { useStoreData } from '@/context/StoreDataContext';
 
 export default function HeroSlider() {
+  const { storeContent } = useStoreData();
+  const slides = storeContent.heroSlides;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -39,16 +37,16 @@ export default function HeroSlider() {
     <section className="relative w-full overflow-hidden group bg-gray-100">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y">
-          {heroImages.map((img, idx) => (
-            <div key={idx} className="relative flex-[0_0_100%] min-w-0 h-[50vh] md:h-[80vh]">
+          {slides.map((slide, idx) => (
+            <div key={slide.id || idx} className="relative flex-[0_0_100%] min-w-0 h-[50vh] md:h-[80vh]">
               <img 
-                src={img.desktop} 
-                alt={`Hero Banner ${idx + 1}`} 
+                src={slide.desktopImage} 
+                alt={slide.alt || `Hero Banner ${idx + 1}`} 
                 className="absolute inset-0 w-full h-full object-cover hidden md:block"
               />
               <img 
-                src={img.mobile} 
-                alt={`Hero Banner ${idx + 1} Mobile`} 
+                src={slide.mobileImage} 
+                alt={slide.alt || `Hero Banner ${idx + 1} Mobile`} 
                 className="absolute inset-0 w-full h-full object-cover md:hidden"
               />
             </div>
@@ -70,7 +68,7 @@ export default function HeroSlider() {
       </button>
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
-        {heroImages.map((_, idx) => (
+        {slides.map((_, idx) => (
           <button 
             key={idx} 
             className={`w-2.5 h-2.5 rounded-full transition-colors ${idx === selectedIndex ? 'bg-white' : 'bg-white/50'}`}

@@ -9,12 +9,13 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import ReviewsWidget from '@/components/layout/ReviewsWidget';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS } from '@/data/products';
+import { useStoreData } from '@/context/StoreDataContext';
 
 export default function WishlistPage() {
   const { wishlist, toggleWishlist, addToCart } = useCart();
+  const { products } = useStoreData();
 
-  const wishlistProducts = PRODUCTS.filter(p => wishlist.includes(p.id));
+  const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
     <>

@@ -10,6 +10,7 @@ export interface Product {
   discountBadge: string;
   isBestSeller: boolean;
   isNew: boolean;
+  inStock?: boolean;
   image: string;
   hoverImage: string;
   images: string[];
@@ -20,6 +21,7 @@ export interface Product {
   benefits: string;
   rating: number;
   reviewsCount: number;
+  updatedAt?: any;
 }
 
 export const PRODUCTS: Product[] = [

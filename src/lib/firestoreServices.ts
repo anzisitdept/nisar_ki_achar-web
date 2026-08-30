@@ -104,6 +104,8 @@ export async function saveOrderToFirestore(order: OrderPayload) {
   }
 }
 
+import { Review, StoreContent } from '@/types';
+
 /* ─── Submit Review to Firestore ─────────────────────── */
 export interface ReviewPayload {
   productId: string;
@@ -118,11 +120,13 @@ export interface ReviewPayload {
 export async function saveReviewToFirestore(review: ReviewPayload) {
   try {
     const reviewsRef = collection(db, 'reviews');
+    const generatedReviewId = `REV-${Math.floor(100000 + Math.random() * 900000)}`;
     const docRef = await addDoc(reviewsRef, {
       ...review,
+      reviewId: generatedReviewId,
       createdAt: serverTimestamp()
     });
-    return { success: true, id: docRef.id };
+    return { success: true, id: docRef.id, reviewId: generatedReviewId };
   } catch (error) {
     console.error('Error saving review to Firestore:', error);
     return { success: false, error };
@@ -138,23 +142,100 @@ export function subscribeTopBarMessages(callback: (messages: string[]) => void) 
   ];
 
   try {
-    const docRef = doc(db, 'store_content', 'topbar');
+    const docRef = doc(db, 'store_content', 'homepage');
     return onSnapshot(
       docRef,
       (docSnap) => {
-        if (docSnap.exists() && docSnap.data().messages) {
-          callback(docSnap.data().messages);
+        if (docSnap.exists() && docSnap.data().topBarMessages) {
+          callback(docSnap.data().topBarMessages);
         } else {
           callback(fallback);
         }
       },
       (error) => {
-        console.warn('Firestore TopBar error:', error);
+        console.warn('Firestore TopBar error, using fallback:', error);
         callback(fallback);
       }
     );
   } catch (err) {
+    console.warn('Firestore TopBar connection failed:', err);
     callback(fallback);
+    return () => {};
+  }
+}
+
+/* ─── Homepage Store Content Real-Time Service ───────── */
+export function subscribeStoreContent(callback: (content: StoreContent | null) => void) {
+  try {
+    const docRef = doc(db, 'store_content', 'homepage');
+    return onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          callback(docSnap.data() as StoreContent);
+        } else {
+          callback(null);
+        }
+      },
+      (error) => {
+        console.warn('Firestore StoreContent error:', error);
+        callback(null);
+      }
+    );
+  } catch (err) {
+    console.warn('Firestore StoreContent connection failed:', err);
+    callback(null);
+    return () => {};
+  }
+}
+
+/* ─── Product Reviews Real-Time Service ──────────────── */
+export function subscribeProductReviews(productId: string, callback: (reviews: Review[]) => void) {
+  try {
+    const reviewsRef = collection(db, 'reviews');
+    // Query approved reviews for the current product ordered by createdAt desc
+    const q = query(
+      reviewsRef,
+      where('productId', '==', productId),
+      where('status', '==', 'approved'),
+      orderBy('createdAt', 'desc')
+    );
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const reviews = snapshot.docs.map(doc => {
+          const data = doc.data();
+          // Map Firestore Timestamp to formatted date string if needed on the client, or pass it as is
+          let formattedDate = '';
+          if (data.createdAt) {
+            const dateObj = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+            formattedDate = dateObj.toLocaleDateString('en-US');
+          } else {
+            formattedDate = new Date().toLocaleDateString('en-US');
+          }
+          return {
+            id: doc.id,
+            reviewId: data.reviewId || doc.id,
+            productId: data.productId,
+            author: data.author,
+            rating: data.rating,
+            title: data.title,
+            body: data.body,
+            isVerified: !!data.isVerified,
+            status: data.status,
+            createdAt: formattedDate // Represent as string on UI side for display
+          } as unknown as Review;
+        });
+        callback(reviews);
+      },
+      (error) => {
+        console.warn('Firestore Reviews query error:', error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.warn('Firestore Reviews connection failed:', err);
+    callback([]);
     return () => {};
   }
 }

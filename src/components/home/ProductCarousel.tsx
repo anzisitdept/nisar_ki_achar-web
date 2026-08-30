@@ -4,7 +4,8 @@ import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Link from 'next/link';
 import { ShoppingBag, Star } from 'lucide-react';
-import { PRODUCTS, Product } from '@/data/products';
+import { Product } from '@/types';
+import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/context/CartContext';
 
 interface ProductCarouselProps {
@@ -19,15 +20,16 @@ export default function ProductCarousel({ title = "DISCOVER OUR SIGNATURE PICKLE
   });
 
   const { addToCart } = useCart();
+  const { products } = useStoreData();
 
-  let filteredProducts: Product[] = PRODUCTS;
+  let filteredProducts: Product[] = products;
   if (categoryFilter) {
     if (categoryFilter === 'best-selling') {
-      filteredProducts = PRODUCTS.filter(p => p.isBestSeller);
+      filteredProducts = products.filter(p => p.isBestSeller);
     } else if (categoryFilter === 'new-arrivals') {
-      filteredProducts = PRODUCTS.filter(p => p.isNew);
+      filteredProducts = products.filter(p => p.isNew);
     } else {
-      filteredProducts = PRODUCTS.filter(p => p.category === categoryFilter);
+      filteredProducts = products.filter(p => p.category === categoryFilter);
     }
   }
 
