@@ -36,7 +36,7 @@ export default function RegisterPage() {
             Create New Account
           </h1>
           <p className="text-xs md:text-sm text-gray-600 max-w-xl mx-auto mt-2">
-            Join Soghat-e-Khas family for fast checkout and special discount offers.
+            Join Nisar Achar family for fast checkout and special discount offers.
           </p>
         </div>
       </section>
@@ -47,7 +47,7 @@ export default function RegisterPage() {
             <div className="text-center py-6 space-y-4">
               <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
               <h2 className="text-xl font-bold text-gray-900">Account Created!</h2>
-              <p className="text-xs text-gray-600">Your account has been created successfully. Welcome to Soghat-e-Khas!</p>
+              <p className="text-xs text-gray-600">Your account has been created successfully. Welcome to Nisar Achar!</p>
               <Link
                 href="/collections/all-products"
                 className="inline-block bg-[#5e0d0c] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-xl shadow-md"

@@ -1,14 +1,20 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ReviewsWidget() {
+  const pathname = usePathname();
+
+  // Hide on cart page to avoid sticky overlay
+  if (pathname === '/cart' || pathname === '/checkout') return null;
+
   return (
     <div
       style={{
         position: 'fixed',
         top: '50%',
-        right: 0,
+        right: '6px',
         transform: 'translateY(-50%)',
         zIndex: 100,
         pointerEvents: 'auto'
@@ -19,19 +25,18 @@ export default function ReviewsWidget() {
           background: '#5e0d0c',
           color: '#ffffff',
           fontFamily: 'Georgia, serif',
-          padding: '14px 7px',
+          padding: '16px 8px',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
           cursor: 'pointer',
-          boxShadow: '-2px 0 8px rgba(0,0,0,0.25)',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
           letterSpacing: '0.12em',
           fontSize: '14px',
           fontWeight: 700,
-          borderTopLeftRadius: '4px',
-          borderBottomLeftRadius: '4px',
+          borderRadius: '10px',
           userSelect: 'none',
           transition: 'opacity 0.2s ease'
         }}
@@ -45,7 +50,8 @@ export default function ReviewsWidget() {
           }
         }}
       >
-        <span style={{ fontSize: '15px', marginBottom: '6px', lineHeight: 1 }}>★</span>
+        <span style={{ fontSize: '15px', lineHeight: 1 }}>★</span>
+        <br />
         <span>Reviews</span>
       </div>
     </div>

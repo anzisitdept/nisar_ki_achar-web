@@ -65,3 +65,45 @@ h1, h2, h3, h4, h5, h6 {
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out forwards;
 }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.6s ease-out forwards;
+}
+
+/* Hide WhatsApp button on cart page */
+.hide-whatsapp-cart .whatsapp-float {
+  display: none !important;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 768px) {
+  .checkout-modal-body {
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Sticky cart bar on product page - hide on cart/checkout pages */
+@media (max-width: 1024px) {
+  .sticky-add-cart-bar {
+    padding: 8px 12px;
+  }
+  .sticky-add-cart-bar .sticky-product-name {
+    display: none;
+  }
+}

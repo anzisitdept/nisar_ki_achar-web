@@ -5,13 +5,7 @@ import { X, Volume2, VolumeX, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { getProductBySlug } from '@/data/products';
-
-export interface ReelItem {
-  id: number;
-  videoUrl: string;
-  title: string;
-  productSlug: string;
-}
+import { ReelItem } from '@/types';
 
 interface VideoModalProps {
   reel: ReelItem | null;
@@ -69,7 +63,7 @@ export default function VideoModal({ reel, onClose }: VideoModalProps) {
         {/* Top Controls */}
         <div className="relative z-10 p-4 flex justify-between items-center bg-gradient-to-b from-black/70 to-transparent">
           <div className="text-white font-semibold text-sm drop-shadow-md">
-            Soghat-e-Khas Reel
+            Nisar Achar Reel
           </div>
           <button 
             onClick={toggleMute} 

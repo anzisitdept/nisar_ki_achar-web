@@ -9,7 +9,7 @@ export default function MidBanners() {
   const banners = storeContent.midBanners;
 
   return (
-    <section className="w-full py-4 flex flex-col gap-4 overflow-hidden">
+    <section className="w-full py-3 md:py-4 flex flex-col gap-3 md:gap-4 overflow-hidden px-2 md:px-0">
       {banners.map((banner, idx) => (
         <Link 
           href={banner.link || '/collections/all-products'} 

@@ -27,7 +27,7 @@ export default function ShippingPolicyPage() {
           <div>
             <h2 className="font-bold text-gray-900 text-base uppercase mb-2">1. Nationwide Delivery</h2>
             <p>
-              Soghat-e-Khas delivers orders across all major cities and towns in Pakistan through trusted courier partners including TCS, Leopards Courier, and M&P.
+              Nisar Achar delivers orders across all major cities and towns in Pakistan through trusted courier partners including TCS, Leopards Courier, and M&P.
             </p>
           </div>
 

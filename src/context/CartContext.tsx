@@ -54,9 +54,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Load cart and wishlist from localStorage on mount
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem('soghat_cart');
+      const savedCart = localStorage.getItem('nisar_cart');
       if (savedCart) setCart(JSON.parse(savedCart));
-      const savedWishlist = localStorage.getItem('soghat_wishlist');
+      const savedWishlist = localStorage.getItem('nisar_wishlist');
       if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
     } catch (e) {
       console.error(e);
@@ -66,7 +66,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Save cart and wishlist
   useEffect(() => {
     try {
-      localStorage.setItem('soghat_cart', JSON.stringify(cart));
+      localStorage.setItem('nisar_cart', JSON.stringify(cart));
     } catch (e) {
       console.error(e);
     }
@@ -74,7 +74,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem('soghat_wishlist', JSON.stringify(wishlist));
+      localStorage.setItem('nisar_wishlist', JSON.stringify(wishlist));
     } catch (e) {
       console.error(e);
     }

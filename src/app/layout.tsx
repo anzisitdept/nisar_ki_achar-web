@@ -19,8 +19,8 @@ const abrilFatface = Abril_Fatface({
 });
 
 export const metadata: Metadata = {
-  title: "Soghat e Khas | No.1 Pickles Brand in Pakistan",
-  description: "Discover the authentic taste of Pakistan with Soghat e Khas, the No.1 pickles brand. Made with premium ingredients and traditional recipes.",
+  title: "Nisar Achar | No.1 Pickles Brand in Pakistan",
+  description: "Discover the authentic taste of Pakistan with Nisar Achar, the No.1 pickles brand. Made with premium ingredients and traditional recipes.",
 };
 
 export default function RootLayout({

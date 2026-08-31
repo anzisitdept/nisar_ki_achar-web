@@ -3,78 +3,16 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import ReviewsWidget from '@/components/layout/ReviewsWidget';
+import ReviewCarousel from '@/components/reviews/ReviewCarousel';
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
-
-/* ─── Review Carousel ────────────────────────────────── */
-const REVIEWS = [
-  { stars: 5, title: '5 star for taste', body: 'I tried their aloo bhkhara chatni … Its delicious. Will order again inshaAllah', author: 'Anonymous' },
-  { stars: 5, title: 'best quality', body: 'best quality, packing, everything.', author: '03161717268' },
-  { stars: 5, title: 'Asalam alaikum…', body: 'I got my parcel.. packaging boht hi Allaaa or zaiqa b zabardast JazzakAllah sohhat_te_khaas', author: 'Bin te maryam' },
-  { stars: 5, title: 'Amazing product!', body: 'Received quickly and the taste is authentic desi. Highly recommended for everyone.', author: 'Fatima K.' },
-  { stars: 5, title: 'Excellent packaging', body: 'Very well packed. Quality is outstanding. Will buy again.', author: 'Ahmed R.' },
-];
-
-function ReviewCarousel() {
-  const [idx, setIdx] = useState(0);
-  const visible = 3;
-  const max = REVIEWS.length - visible;
-
-  const prev = () => setIdx(i => Math.max(0, i - 1));
-  const next = () => setIdx(i => Math.min(max, i + 1));
-
-  return (
-    <section style={{ borderBottom: '1px solid #e5e7eb', padding: '32px 0', background: '#fff' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: '24px' }}>
-        {/* Left label */}
-        <div style={{ minWidth: '140px', textAlign: 'center', flexShrink: 0 }}>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: '#1a1a1a', lineHeight: 1.2, marginBottom: '6px' }}>
-            Let customers<br />speak for us
-          </p>
-          <div style={{ color: '#be0000', fontSize: '18px', marginBottom: '2px' }}>★★★★★</div>
-          <p style={{ fontSize: '12px', color: '#be0000', fontWeight: 600 }}>from 2200 reviews</p>
-        </div>
-
-        {/* Arrow left */}
-        <button
-          onClick={prev}
-          disabled={idx === 0}
-          style={{ background: 'none', border: 'none', cursor: idx === 0 ? 'default' : 'pointer', opacity: idx === 0 ? 0.3 : 1, padding: '4px', flexShrink: 0 }}
-        >
-          <ChevronLeft size={22} color="#333" />
-        </button>
-
-        {/* Cards */}
-        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', overflow: 'hidden' }}>
-          {REVIEWS.slice(idx, idx + visible).map((r, i) => (
-            <div key={i} style={{ padding: '0 8px' }}>
-              <div style={{ color: '#be0000', fontSize: '16px', marginBottom: '6px' }}>{'★'.repeat(r.stars)}</div>
-              <p style={{ fontWeight: 700, fontSize: '13px', color: '#1a1a1a', marginBottom: '6px' }}>{r.title}</p>
-              <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.5, marginBottom: '12px' }}>{r.body}</p>
-              <p style={{ fontSize: '12px', color: '#333', fontWeight: 600 }}>{r.author}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Arrow right */}
-        <button
-          onClick={next}
-          disabled={idx >= max}
-          style={{ background: 'none', border: 'none', cursor: idx >= max ? 'default' : 'pointer', opacity: idx >= max ? 0.3 : 1, padding: '4px', flexShrink: 0 }}
-        >
-          <ChevronRight size={22} color="#333" />
-        </button>
-      </div>
-    </section>
-  );
-}
 
 /* ─── Sidebar Wrapper ────────────────────────── */
 function SideSection({ title, children }: { title: string; children: React.ReactNode }) {
@@ -167,123 +105,162 @@ function CategoryInner() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'best-selling');
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [viewMode, setViewMode] = useState<'grid4' | 'grid3' | 'grid2' | 'list'>('grid4');
+  const [showFilter, setShowFilter] = useState(false);
 
   let sorted = [...displayProductsList];
   if (sortBy === 'price-low') sorted.sort((a, b) => a.price - b.price);
   else if (sortBy === 'price-high') sorted.sort((a, b) => b.price - a.price);
   else if (sortBy === 'title') sorted.sort((a, b) => a.name.localeCompare(b.name));
 
-  const gridCols = viewMode === 'grid4' ? 4 : viewMode === 'grid3' ? 3 : viewMode === 'grid2' ? 2 : 1;
   const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
 
+  // Responsive grid columns for mobile/tablet
+  const getResponsiveGrid = () => {
+    if (viewMode === 'list') return 'grid-cols-1';
+    if (viewMode === 'grid2') return 'grid-cols-2';
+    if (viewMode === 'grid3') return 'grid-cols-2 md:grid-cols-3';
+    return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+  };
+
+  const Sidebar = () => (
+    <aside className="lg:border-r lg:border-gray-100 lg:pr-5">
+      <SideSection title="Categories">
+        <div className="flex flex-col gap-2">
+          {categories.map(cat => (
+            <Link
+              key={cat.id}
+              href={`/collections/${cat.slug}`}
+              onClick={() => setShowFilter(false)}
+              style={{
+                fontSize: '12px',
+                color: cat.slug === categorySlug ? '#be0000' : '#444',
+                fontWeight: cat.slug === categorySlug ? 700 : 400,
+                textDecoration: 'none',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <span>{cat.name.split('(')[0].trim()}</span>
+            </Link>
+          ))}
+        </div>
+      </SideSection>
+
+      <SideSection title="Availability">
+        <div className="flex flex-col gap-1.5 text-xs text-gray-600">
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input type="checkbox" defaultChecked />
+            <span>In Stock ({displayProductsList.length})</span>
+          </label>
+          <label className="flex items-center gap-1.5 cursor-pointer opacity-60">
+            <input type="checkbox" />
+            <span>Out Of Stock (0)</span>
+          </label>
+        </div>
+      </SideSection>
+
+      <SideSection title="Bestselling">
+        <div className="flex flex-col gap-3.5">
+          {bestSellers.map(p => (
+            <Link key={p.id} href={`/products/${p.slug}`} className="flex gap-2.5 items-center no-underline">
+              <div className="relative w-14 h-14 flex-shrink-0 border border-gray-200 overflow-hidden">
+                {p.discountBadge && (
+                  <div className="absolute top-0 left-0 bg-[#e95144] text-white text-[8px] font-bold px-1 py-px z-10">
+                    {p.discountBadge}
+                  </div>
+                )}
+                <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <p className="text-[11px] text-gray-800 leading-snug mb-1">{p.name.split('(')[0].trim()}</p>
+                <p className="text-[11px]">
+                  <span className="line-through text-gray-400 mr-1">Rs.{p.originalPrice.toLocaleString()}</span>
+                  <span className="text-[#e95144] font-bold">Rs.{p.price.toLocaleString()}</span>
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </SideSection>
+    </aside>
+  );
+
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+    <div className="max-w-[1280px] mx-auto px-4 md:px-6">
       {/* Direct Breadcrumb: Home > [Category Name] */}
-      <nav style={{ padding: '16px 0', fontSize: '12px', color: '#555' }}>
-        <Link href="/" style={{ color: '#555', textDecoration: 'none' }}>Home</Link>
-        <span style={{ margin: '0 6px', color: '#999' }}>{'>'}</span>
-        <span style={{ color: '#333' }}>{categoryTitle}</span>
+      <nav className="py-4 text-xs text-gray-500">
+        <Link href="/" className="text-gray-500 no-underline">Home</Link>
+        <span className="mx-1.5 text-gray-400">{'>'}</span>
+        <span className="text-gray-700">{categoryTitle}</span>
       </nav>
 
       {/* Main 2-column layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '32px', paddingTop: '10px', paddingBottom: '60px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 lg:gap-8 pt-2.5 pb-14">
         
-        {/* Left Sidebar */}
-        <aside style={{ borderRight: '1px solid #f0f0f0', paddingRight: '20px' }}>
-          
-          <SideSection title="Categories">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {categories.map(cat => (
-                <Link
-                  key={cat.id}
-                  href={`/collections/${cat.slug}`}
-                  style={{
-                    fontSize: '12px',
-                    color: cat.slug === categorySlug ? '#be0000' : '#444',
-                    fontWeight: cat.slug === categorySlug ? 700 : 400,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  <span>{cat.name.split('(')[0].trim()}</span>
-                </Link>
-              ))}
-            </div>
-          </SideSection>
+        {/* Left Sidebar - hidden on mobile, shown in drawer */}
+        <div className="hidden lg:block">
+          <Sidebar />
+        </div>
 
-          <SideSection title="Availability">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#444' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-                <input type="checkbox" defaultChecked />
-                <span>In Stock ({displayProductsList.length})</span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', opacity: 0.6 }}>
-                <input type="checkbox" />
-                <span>Out Of Stock (0)</span>
-              </label>
+        {/* Mobile Filter Drawer */}
+        {showFilter && (
+          <div className="fixed inset-0 z-[105] lg:hidden">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setShowFilter(false)} />
+            <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl overflow-y-auto p-5 animate-slideUp">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-sm text-gray-900 uppercase">Filters</h3>
+                <button onClick={() => setShowFilter(false)} className="p-1 text-gray-500 hover:text-gray-900" aria-label="Close filters">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <Sidebar />
             </div>
-          </SideSection>
-
-          <SideSection title="Bestselling">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {bestSellers.map(p => (
-                <Link key={p.id} href={`/products/${p.slug}`} style={{ display: 'flex', gap: '10px', alignItems: 'center', textDecoration: 'none' }}>
-                  <div style={{ position: 'relative', width: '56px', height: '56px', flexShrink: 0, border: '1px solid #eee', overflow: 'hidden' }}>
-                    {p.discountBadge && (
-                      <div style={{ position: 'absolute', top: 0, left: 0, background: '#e95144', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1 }}>
-                        {p.discountBadge}
-                      </div>
-                    )}
-                    <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '11px', color: '#222', lineHeight: 1.3, marginBottom: '4px' }}>{p.name.split('(')[0].trim()}</p>
-                    <p style={{ fontSize: '11px' }}>
-                      <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}</span>
-                      <span style={{ color: '#e95144', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}</span>
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </SideSection>
-
-        </aside>
+          </div>
+        )}
 
         {/* Right Content */}
-        <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: 700, color: '#111', marginBottom: '20px' }}>
+        <div className="min-w-0">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold text-gray-900 mb-5">
             {categoryTitle}
           </h1>
 
           {/* Control Bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', paddingBottom: '14px', borderBottom: '1px solid #e5e7eb', marginBottom: '20px', flexWrap: 'wrap' }}>
-            
+          <div className="flex items-center gap-3 pb-3.5 border-b border-gray-200 mb-5 flex-wrap">
+
+            {/* Mobile Filter Button */}
+            <button
+              onClick={() => setShowFilter(true)}
+              className="lg:hidden flex items-center gap-1.5 border border-gray-300 rounded px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filter
+            </button>
+
             {/* View As */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '6px' }}>View As</span>
+            <div className="hidden md:flex items-center gap-1">
+              <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mr-1.5">View As</span>
               {(['grid4', 'grid3', 'grid2', 'list'] as const).map(mode => (
                 <button
                   key={mode}
                   onClick={() => setViewMode(mode)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', opacity: viewMode === mode ? 1 : 0.4 }}
+                  className="bg-none border-none cursor-pointer p-1"
+                  style={{ opacity: viewMode === mode ? 1 : 0.4 }}
                 >
-                  <span style={{ fontSize: '11px', fontWeight: 700 }}>{mode === 'grid4' ? '田' : mode === 'grid3' ? '≡' : mode === 'grid2' ? '⌸' : '☰'}</span>
+                  <span className="text-[11px] font-bold">{mode === 'grid4' ? '田' : mode === 'grid3' ? '≡' : mode === 'grid2' ? '⌸' : '☰'}</span>
                 </button>
               ))}
             </div>
 
-            <div style={{ flex: 1 }} />
+            <div className="flex-1" />
 
             {/* Items Per Page */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase' }}>Items Per Page</span>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline text-[11px] font-semibold text-gray-500 uppercase">Items</span>
               <select
                 value={itemsPerPage}
                 onChange={e => setItemsPerPage(Number(e.target.value))}
-                style={{ border: '1px solid #ccc', borderRadius: '2px', padding: '4px 10px', fontSize: '12px', background: '#fff' }}
+                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white"
               >
                 <option value={20}>20</option>
                 <option value={40}>40</option>
@@ -291,12 +268,12 @@ function CategoryInner() {
             </div>
 
             {/* Sort By */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase' }}>Sort By</span>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline text-[11px] font-semibold text-gray-500 uppercase">Sort</span>
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
-                style={{ border: '1px solid #ccc', borderRadius: '2px', padding: '4px 10px', fontSize: '12px', background: '#fff' }}
+                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white"
               >
                 <option value="best-selling">Best Selling</option>
                 <option value="price-low">Price: Low to High</option>
@@ -308,11 +285,7 @@ function CategoryInner() {
           </div>
 
           {/* Product Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-            gap: '16px'
-          }}>
+          <div className={`grid gap-3 md:gap-4 ${getResponsiveGrid()}`}>
             {sorted.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}

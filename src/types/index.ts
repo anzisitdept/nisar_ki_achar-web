@@ -130,8 +130,16 @@ export interface Banner {
   alt: string;
 }
 
+export interface ReelItem {
+  id: number;
+  videoUrl: string;
+  title: string;
+  productSlug: string;
+}
+
 export interface StoreContent {
   topBarMessages: string[];
   heroSlides: HeroSlide[];
   midBanners: Banner[];
+  reels: ReelItem[];
 }

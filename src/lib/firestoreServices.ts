@@ -8,7 +8,8 @@ import {
   query,
   where,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  runTransaction
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { PRODUCTS, Product } from '@/data/products';
@@ -80,6 +81,9 @@ export interface OrderPayload {
   customerPhone: string;
   shippingAddress: string;
   city: string;
+  province?: { id: string; name: string };
+  district?: { id: string; name: string };
+  tehsil?: { id: string; name: string };
   items: any[];
   subtotal: number;
   shippingFee: number;
@@ -88,10 +92,31 @@ export interface OrderPayload {
   orderStatus: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
 }
 
+async function getNextOrderNumber(): Promise<number> {
+  const counterRef = doc(db, 'counters', 'orders');
+  try {
+    return await runTransaction(db, async (transaction) => {
+      const snap = await transaction.get(counterRef);
+      const current = snap.exists() ? Number(snap.data().count || 0) : 0;
+      const next = current + 1;
+      transaction.set(counterRef, { count: next }, { merge: true });
+      return next;
+    });
+  } catch (error) {
+    // Fallback if transactions are unavailable (e.g. emulator/permissions)
+    console.warn('Order counter transaction failed, using fallback:', error);
+    return Math.floor(Date.now() / 1000);
+  }
+}
+
 export async function saveOrderToFirestore(order: OrderPayload) {
   try {
     const ordersRef = collection(db, 'orders');
-    const orderNumber = order.orderId || `SEK-${Math.floor(100000 + Math.random() * 900000)}`;
+    const seq = await getNextOrderNumber();
+    const orderNumber =
+      order.orderId && order.orderId.startsWith('NA-')
+        ? order.orderId
+        : `NA-${String(seq).padStart(6, '0')}`;
     const docRef = await addDoc(ordersRef, {
       ...order,
       orderId: orderNumber,
@@ -235,6 +260,48 @@ export function subscribeProductReviews(productId: string, callback: (reviews: R
     );
   } catch (err) {
     console.warn('Firestore Reviews connection failed:', err);
+    callback([]);
+    return () => {};
+  }
+}
+
+/* ─── All Approved Reviews Real-Time Service ─────────── */
+export function subscribeAllApprovedReviews(callback: (reviews: Review[]) => void) {
+  try {
+    const reviewsRef = collection(db, 'reviews');
+    const q = query(
+      reviewsRef,
+      where('status', '==', 'approved'),
+      orderBy('createdAt', 'desc')
+    );
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const reviews = snapshot.docs.map(doc => {
+          const data = doc.data();
+          const rating = typeof data.rating === 'number' ? data.rating : 5;
+          return {
+            id: doc.id,
+            reviewId: data.reviewId || doc.id,
+            productId: data.productId,
+            author: data.author,
+            rating,
+            title: data.title,
+            body: data.body,
+            isVerified: !!data.isVerified,
+            status: data.status,
+            createdAt: data.createdAt
+          } as Review;
+        });
+        callback(reviews);
+      },
+      (error) => {
+        console.warn('Firestore All Reviews query error:', error);
+        callback([]);
+      }
+    );
+  } catch (err) {
+    console.warn('Firestore All Reviews connection failed:', err);
     callback([]);
     return () => {};
   }

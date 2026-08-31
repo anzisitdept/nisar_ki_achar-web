@@ -12,7 +12,7 @@ import ReviewsWidget from '@/components/layout/ReviewsWidget';
 export default function OrdersPage() {
   const sampleOrders = [
     {
-      id: 'SEK-849201',
+      id: 'NA-000001',
       date: 'Aug 10, 2026',
       status: 'In Transit',
       items: 'Sarson Da Saag Pickle (1kg), Amla Murabba (500g)',
@@ -20,7 +20,7 @@ export default function OrdersPage() {
       payment: 'Cash on Delivery (COD)'
     },
     {
-      id: 'SEK-710293',
+      id: 'NA-000002',
       date: 'Jul 24, 2026',
       status: 'Delivered',
       items: 'Special Aloo Bukhara Chutney (500g)',
@@ -67,7 +67,7 @@ export default function OrdersPage() {
               <div className="flex justify-between items-center pt-2 border-t text-xs">
                 <span className="font-bold text-gray-900">Total: Rs. {order.total}</span>
                 <a
-                  href={`https://wa.me/923000000000?text=Hi%20Soghat-e-Khas,%20please%20update%20status%20for%20order%20${order.id}`}
+                  href={`https://wa.me/923000000000?text=Hi%20Nisar%20Achar,%20please%20update%20status%20for%20order%20${order.id}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-green-700 font-bold hover:underline"

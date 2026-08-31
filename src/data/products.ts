@@ -37,11 +37,11 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
-      "https://soghatekhas.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
+      "https://nisarachar.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -69,11 +69,11 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-26%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/2_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/2_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
-      "https://soghatekhas.com/cdn/shop/files/2_2_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
+      "https://nisarachar.com/cdn/shop/files/2_2_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -101,11 +101,11 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-21%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-      "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+      "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -133,11 +133,11 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": true,
     "isNew": true,
-    "image": "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/6_1_533x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/6_1_533x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
-      "https://soghatekhas.com/cdn/shop/files/6_1_533x.png"
+      "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
+      "https://nisarachar.com/cdn/shop/files/6_1_533x.png"
     ],
     "weights": [
       "500g",
@@ -165,11 +165,11 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-27%",
     "isBestSeller": false,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
-      "https://soghatekhas.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png"
+      "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
+      "https://nisarachar.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png"
     ],
     "weights": [
       "500g",
@@ -197,10 +197,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-29%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -228,10 +228,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-27%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -259,10 +259,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-26%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/2_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/2_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -290,10 +290,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-25%",
     "isBestSeller": true,
     "isNew": true,
-    "image": "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/6_1_533x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/6_1_533x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -321,10 +321,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-28%",
     "isBestSeller": false,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -352,10 +352,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": false,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -383,10 +383,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-26%",
     "isBestSeller": true,
     "isNew": true,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -414,10 +414,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/2_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/2_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -445,10 +445,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-31%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -476,10 +476,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": false,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/6_1_533x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/6_1_533x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
     ],
     "weights": [
       "500g",
@@ -507,10 +507,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-30%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/4_62c1f1de-4c19-42a3-b8d3-a61d995b48fb_900x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_00c0b731-9c48-4d3a-bf59-0ad7b9a3cfbe_533x.jpg"
     ],
     "weights": [
       "250g",
@@ -540,10 +540,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-33%",
     "isBestSeller": true,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/1_f5d5b353-617f-4ca6-ae85-3da84d1e4f8e_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/02_2ec724f6-078a-47e4-b64a-57cd5f305606_533x.jpg"
     ],
     "weights": [
       "250g",
@@ -571,10 +571,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-26%",
     "isBestSeller": false,
     "isNew": true,
-    "image": "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/2_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/2_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/04_e50c3509-8de8-4347-8386-7c1317eb893c_533x.jpg"
     ],
     "weights": [
       "250g",
@@ -602,10 +602,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-31%",
     "isBestSeller": false,
     "isNew": false,
-    "image": "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/3_2_533x.jpg",
+    "image": "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/3_2_533x.jpg",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/01_e8785eb1-16a7-4ebe-a073-40cf7dce0210_533x.jpg"
     ],
     "weights": [
       "800ml"
@@ -631,10 +631,10 @@ export const PRODUCTS: Product[] = [
     "discountBadge": "-31%",
     "isBestSeller": true,
     "isNew": true,
-    "image": "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
-    "hoverImage": "https://soghatekhas.com/cdn/shop/files/6_1_533x.png",
+    "image": "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg",
+    "hoverImage": "https://nisarachar.com/cdn/shop/files/6_1_533x.png",
     "images": [
-      "https://soghatekhas.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
+      "https://nisarachar.com/cdn/shop/files/06_d241e5df-955b-4d06-acda-2420ffd7af15_533x.jpg"
     ],
     "weights": [
       "4 x 500g Jars"

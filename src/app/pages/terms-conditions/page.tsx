@@ -22,7 +22,7 @@ export default function TermsPage() {
 
       <main className="container mx-auto px-4 lg:px-8 max-w-4xl py-12 text-xs md:text-sm text-gray-700 leading-relaxed space-y-6">
         <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-xs space-y-4">
-          <p>Welcome to Soghat-e-Khas. By accessing and using our website, you agree to comply with our Terms & Conditions.</p>
+          <p>Welcome to Nisar Achar. By accessing and using our website, you agree to comply with our Terms & Conditions.</p>
           <h3 className="font-bold text-gray-900 uppercase">Product Accuracy</h3>
           <p>We strive to accurately display product titles, weights, prices, and imagery. As our items are handcrafted in traditional batches, slight natural variations in color or texture may occur.</p>
           <h3 className="font-bold text-gray-900 uppercase">Cash on Delivery Orders</h3>

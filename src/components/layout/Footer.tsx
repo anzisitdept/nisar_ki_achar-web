@@ -1,7 +1,34 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
+
+/* ─── Collapsible Footer Section (dropdown on mobile, always open on desktop) ─── */
+function FooterSection({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="lg:block">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="lg:cursor-default w-full flex items-center justify-between lg:justify-start text-left"
+      >
+        <h3 className="font-bold text-xs tracking-widest uppercase mb-0 lg:mb-5 text-white font-sans">
+          {title}
+        </h3>
+        <span className="lg:hidden text-white/80 transition-transform duration-300">
+          <ChevronDown size={16} className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+      <div className={`${open ? 'block' : 'hidden'} lg:block mt-3 lg:mt-0`}>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 /* ─── Professional SVG Social Icons ─────────────────── */
 function FacebookIcon() {
@@ -53,39 +80,41 @@ export default function Footer() {
       {/* Main Footer Content */}
       <div className="bg-[#4a0808] text-white pt-14 pb-8">
         <div className="container mx-auto px-4 lg:px-8 max-w-[1320px]">
-          
+
           {/* 4-Column Grid matching official layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
 
             {/* Column 1: SHOP */}
             <div>
-              <h3 className="font-bold text-xs tracking-widest uppercase mb-5 text-white font-sans">SHOP</h3>
-              <ul className="space-y-2.5 text-xs font-normal text-gray-200">
-                <li><Link href="/collections/new-arrivals" className="hover:underline">New Arrivals</Link></li>
-                <li><Link href="/collections/pickles" className="hover:underline">Pickles</Link></li>
-                <li><Link href="/collections/murabba" className="hover:underline">Murabbas</Link></li>
-                <li><Link href="/collections/chutney" className="hover:underline">Chutney</Link></li>
-                <li><Link href="/collections/super-foods" className="hover:underline">Super Foods</Link></li>
-                <li><Link href="/collections/syrup" className="hover:underline">Syrups</Link></li>
-                <li><Link href="/collections/best-selling-pickles" className="hover:underline">Best Selling</Link></li>
-                <li><Link href="/collections/bundles" className="hover:underline">Bundles</Link></li>
-                <li><Link href="/collections/all-products" className="hover:underline">All Products</Link></li>
-              </ul>
+              <FooterSection title="SHOP">
+                <ul className="space-y-2.5 text-xs font-normal text-gray-200">
+                  <li><Link href="/collections/new-arrivals" className="hover:underline">New Arrivals</Link></li>
+                  <li><Link href="/collections/pickles" className="hover:underline">Pickles</Link></li>
+                  <li><Link href="/collections/murabba" className="hover:underline">Murabbas</Link></li>
+                  <li><Link href="/collections/chutney" className="hover:underline">Chutney</Link></li>
+                  <li><Link href="/collections/super-foods" className="hover:underline">Super Foods</Link></li>
+                  <li><Link href="/collections/syrup" className="hover:underline">Syrups</Link></li>
+                  <li><Link href="/collections/best-selling-pickles" className="hover:underline">Best Selling</Link></li>
+                  <li><Link href="/collections/bundles" className="hover:underline">Bundles</Link></li>
+                  <li><Link href="/collections/all-products" className="hover:underline">All Products</Link></li>
+                </ul>
+              </FooterSection>
             </div>
 
             {/* Column 2: INFORMATION */}
             <div>
-              <h3 className="font-bold text-xs tracking-widest uppercase mb-5 text-white font-sans">INFORMATION</h3>
-              <ul className="space-y-2.5 text-xs font-normal text-gray-200">
-                <li><Link href="/pages/returns-and-refund-policy" className="hover:underline">Returns And Refund Policy</Link></li>
-                <li><Link href="/pages/cancellation-policy" className="hover:underline">Cancellation Policy</Link></li>
-                <li><Link href="/pages/terms-conditions" className="hover:underline">Terms & Conditions</Link></li>
-                <li><Link href="/pages/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
-                <li><Link href="/pages/privacy-policy" className="hover:underline">Privacy Policy</Link></li>
-                <li><Link href="/pages/frequently-asked-questions" className="hover:underline">FAQ's</Link></li>
-                <li><Link href="/pages/cookie-policy" className="hover:underline">Cookie Policy</Link></li>
-                <li><Link href="/pages/contact-us" className="hover:underline">Contact Us</Link></li>
-              </ul>
+              <FooterSection title="INFORMATION">
+                <ul className="space-y-2.5 text-xs font-normal text-gray-200">
+                  <li><Link href="/pages/returns-and-refund-policy" className="hover:underline">Returns And Refund Policy</Link></li>
+                  <li><Link href="/pages/cancellation-policy" className="hover:underline">Cancellation Policy</Link></li>
+                  <li><Link href="/pages/terms-conditions" className="hover:underline">Terms & Conditions</Link></li>
+                  <li><Link href="/pages/shipping-policy" className="hover:underline">Shipping Policy</Link></li>
+                  <li><Link href="/pages/privacy-policy" className="hover:underline">Privacy Policy</Link></li>
+                  <li><Link href="/pages/frequently-asked-questions" className="hover:underline">FAQ's</Link></li>
+                  <li><Link href="/pages/cookie-policy" className="hover:underline">Cookie Policy</Link></li>
+                  <li><Link href="/pages/contact-us" className="hover:underline">Contact Us</Link></li>
+                </ul>
+              </FooterSection>
             </div>
 
             {/* Column 3: SIGN UP AND AVAIL 10% EXTRA DISCOUNT */}
@@ -172,7 +201,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span>✉</span>
-                  <span>admin@soghatekhas.com</span>
+                  <span>admin@nisarachar.com</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>🚚</span>
@@ -197,24 +226,23 @@ export default function Footer() {
           </div>
 
           {/* Bottom Bar: Copyright & Visa / Mastercard Logos without white container background */}
-          <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-gray-200 font-normal gap-4">
-            <p>Soghat E Khas @2025. All Rights Reserved</p>
+          <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row items-center justify-between text-sm md:text-base text-gray-100 font-medium gap-4">
+            <p>Nisar Achar @2025. All Rights Reserved</p>
 
             {/* Payment Method Images rendered side by side directly */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <img
                 src="/Visa.png"
                 alt="Visa"
-                className="h-7 w-auto object-contain rounded-xs"
+                className="h-10 w-auto object-contain rounded-sm"
               />
               <img
                 src="/mastercard.jpg"
                 alt="Mastercard"
-                className="h-7 w-auto object-contain rounded-xs"
+                className="h-10 w-auto object-contain rounded-sm"
               />
             </div>
           </div>
-
         </div>
       </div>
     </footer>

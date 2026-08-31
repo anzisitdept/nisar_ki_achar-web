@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
@@ -18,6 +18,13 @@ export default function CartDrawer() {
     amountNeededForFreeShipping,
     freeShippingThreshold
   } = useCart();
+
+  const [shippingDismissed, setShippingDismissed] = useState(false);
+
+  // Reset dismissed state when cart opens
+  useEffect(() => {
+    if (isCartOpen) setShippingDismissed(false);
+  }, [isCartOpen]);
 
   // Scroll lock & Escape key listener
   useEffect(() => {
@@ -81,14 +88,22 @@ export default function CartDrawer() {
             </div>
 
             {/* Free Shipping Bar */}
-            <div className="bg-[#fae9e8] p-3 text-center border-b border-[#f3d2d0]">
+            {!shippingDismissed && (
+            <div className="bg-[#fae9e8] p-3 text-center border-b border-[#f3d2d0] relative">
+              <button
+                onClick={() => setShippingDismissed(true)}
+                className="absolute top-1.5 right-2 p-1 text-[#5e0d0c]/50 hover:text-[#5e0d0c] transition-colors z-10"
+                aria-label="Close shipping notification"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
               {amountNeededForFreeShipping > 0 ? (
-                <p className="text-xs text-[#5e0d0c] font-semibold">
+                <p className="text-xs text-[#5e0d0c] font-semibold pr-5">
                   Add <span className="font-bold">Rs. {amountNeededForFreeShipping}</span> more to get <span className="underline">FREE Shipping</span>!
                 </p>
               ) : (
-                <p className="text-xs text-green-700 font-bold">
-                  🎉 Congratulations! You have unlocked FREE Shipping!
+                <p className="text-xs text-green-700 font-bold pr-5">
+                  Congratulations! You have unlocked FREE Shipping!
                 </p>
               )}
               <div className="w-full bg-white/70 h-2 rounded-full mt-2 overflow-hidden">
@@ -100,6 +115,7 @@ export default function CartDrawer() {
                 />
               </div>
             </div>
+            )}
 
             {/* Cart Item List */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 divide-y divide-gray-100">

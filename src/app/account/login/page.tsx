@@ -33,8 +33,8 @@ export default function LoginPage() {
       <div className="pt-4 pb-8 text-center">
         <Link href="/">
           <img
-            src="https://soghatekhas.com/cdn/shop/files/LogoSEK_881f3b7e-fdb5-4f01-b6e5-cfa3726171ec.webp?v=1736533537"
-            alt="Soghat E Khas"
+            src="/NISAAR.png"
+            alt="Nisar Achar"
             className="h-16 md:h-20 w-auto mx-auto object-contain"
           />
         </Link>

@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'soghatekhas.com',
+        hostname: 'nisarachar.com',
       },
       {
         protocol: 'https',

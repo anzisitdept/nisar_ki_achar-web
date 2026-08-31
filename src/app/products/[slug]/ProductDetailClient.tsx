@@ -105,7 +105,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     <div style={{ fontFamily: 'sans-serif', color: '#222' }}>
       
       {/* Main Grid: Left Gallery | Right Details */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '40px', alignItems: 'start' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start px-4 md:px-0">
         
         {/* Left Column: Gallery */}
         <div>
@@ -404,7 +404,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       </div>
 
       {/* RICH DESCRIPTION CONTENT SECTION BELOW PRODUCT DETAILS (MATCHING OFFICIAL SITE) */}
-      <div style={{ marginTop: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+      <div className="mt-10 md:mt-16 border-t border-gray-200 pt-8 md:pt-10 overflow-x-hidden">
         
         {/* Description Tab Header */}
         <div style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '32px', textAlign: 'center' }}>
@@ -474,7 +474,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       </div>
 
       {/* Customer Reviews Section */}
-      <div id="customer-reviews-section" style={{ marginTop: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
+      <div id="customer-reviews-section" className="mt-10 md:mt-16 border-t border-gray-200 pt-8 md:pt-10 px-4 md:px-0">
         <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, textAlign: 'center', marginBottom: '24px' }}>
           Customer Reviews
         </h2>
@@ -541,7 +541,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 Write a Review
               </h3>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '15px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '5px', color: '#333' }}>Your Name *</label>
                   <input
@@ -695,36 +695,23 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
       {/* Sticky Purchase Bar at Bottom */}
       {showStickyBar && (
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: '#fff',
-          borderTop: '1px solid #ddd',
-          padding: '10px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          zIndex: 999,
-          boxShadow: '0 -4px 12px rgba(0,0,0,0.08)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src={selectedImage} alt={product.name} style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: '4px' }} />
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2.5 md:p-3 z-[999] shadow-[0_-4px_12px_rgba(0,0,0,0.08)] hidden md:flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img src={selectedImage} alt={product.name} className="w-10 h-10 object-cover rounded" />
             <div>
-              <p style={{ fontSize: '12px', fontWeight: 700, color: '#111', margin: 0 }}>{product.name}</p>
-              <p style={{ fontSize: '11px', margin: 0 }}>
-                <span style={{ textDecoration: 'line-through', color: '#888', marginRight: '6px' }}>Rs.{originalPrice.toLocaleString()}.00</span>
-                <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{currentPrice.toLocaleString()}.00</span>
+              <p className="text-xs font-bold text-gray-900 m-0">{product.name}</p>
+              <p className="text-[11px] m-0">
+                <span className="line-through text-gray-400 mr-1.5">Rs.{originalPrice.toLocaleString()}</span>
+                <span className="text-[#be0000] font-bold">Rs.{currentPrice.toLocaleString()}</span>
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="flex items-center gap-3">
             <select
               value={selectedWeight}
               onChange={e => setSelectedWeight(e.target.value)}
-              style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '6px 12px', fontSize: '12px', background: '#fff' }}
+              className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white"
             >
               {defaultWeights.map(w => <option key={w} value={w}>{w}</option>)}
             </select>
@@ -732,18 +719,28 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <button
               onClick={handleAddToCart}
               disabled={product.inStock === false}
-              style={{
-                background: product.inStock === false ? '#cccccc' : '#1a1a1a',
-                color: '#fff',
-                fontWeight: 700,
-                fontSize: '11px',
-                letterSpacing: '0.08em',
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
-                textTransform: 'uppercase'
-              }}
+              className="bg-[#1a1a1a] text-white font-bold text-[11px] uppercase tracking-wider px-5 py-2.5 rounded disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-black transition"
+            >
+              {product.inStock === false ? 'OUT OF STOCK' : 'ADD TO CART'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Sticky Add to Cart Bar */}
+      {showStickyBar && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-[999] shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <p className="text-[11px] font-bold text-gray-900 m-0 line-clamp-1">{product.name}</p>
+              <p className="text-[10px] m-0">
+                <span className="text-[#e95144] font-bold">Rs.{currentPrice.toLocaleString()}</span>
+              </p>
+            </div>
+            <button
+              onClick={handleAddToCart}
+              disabled={product.inStock === false}
+              className="bg-[#1a1a1a] text-white font-bold text-[10px] uppercase tracking-wider px-4 py-2.5 rounded disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-black transition flex-shrink-0"
             >
               {product.inStock === false ? 'OUT OF STOCK' : 'ADD TO CART'}
             </button>

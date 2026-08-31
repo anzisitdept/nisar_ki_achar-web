@@ -11,7 +11,7 @@ import ReviewsWidget from '@/components/layout/ReviewsWidget';
 
 const FAQS = [
   {
-    q: 'How can I place an order on Soghat-e-Khas?',
+    q: 'How can I place an order on Nisar Achar?',
     a: 'You can easily place an order by browsing our website, clicking "ADD TO CART" or "BUY IT NOW" on any product, and filling out your Cash on Delivery (COD) shipping address at checkout. You can also order directly via WhatsApp at 051-8300036.'
   },
   {
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Are your pickles made in pure mustard oil?',
-    a: 'Yes! All Soghat-e-Khas pickles are prepared 100% in pure cold-pressed mustard oil (Kachi Ghani Sarson Ka Tel) without any artificial colors or synthetic chemical preservatives.'
+    a: 'Yes! All Nisar Achar pickles are prepared 100% in pure cold-pressed mustard oil (Kachi Ghani Sarson Ka Tel) without any artificial colors or synthetic chemical preservatives.'
   },
   {
     q: 'What is your shipping charge policy?',

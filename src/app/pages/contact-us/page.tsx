@@ -55,7 +55,7 @@ export default function ContactUsPage() {
                 <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
                 <h3 className="text-lg font-bold text-gray-900">Message Received!</h3>
                 <p className="text-xs text-gray-600">
-                  Thank you for reaching out to Soghat-e-Khas. Our customer support representative will get back to you within 24 hours.
+                  Thank you for reaching out to Nisar Achar. Our customer support representative will get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
@@ -181,7 +181,7 @@ export default function ContactUsPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase">Email Support</h4>
-                    <p className="font-semibold text-gray-800">support@soghatekhas.com</p>
+                    <p className="font-semibold text-gray-800">support@nisarachar.com</p>
                   </div>
                 </div>
 
@@ -192,7 +192,7 @@ export default function ContactUsPage() {
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase">Head Office Address</h4>
                     <p className="font-medium text-gray-700 leading-relaxed">
-                      Soghat-e-Khas Headquarters, Sector I-9/3, Industrial Area, Islamabad, Pakistan.
+                      Nisar Achar Headquarters, Sector I-9/3, Industrial Area, Islamabad, Pakistan.
                     </p>
                   </div>
                 </div>

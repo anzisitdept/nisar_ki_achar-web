@@ -9,6 +9,7 @@ import ProductCarousel from '@/components/home/ProductCarousel';
 import VideoCarousel from '@/components/home/VideoCarousel';
 import MidBanners from '@/components/home/MidBanners';
 import ContactBlock from '@/components/home/ContactBlock';
+import Marquee from '@/components/home/Marquee';
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
       <TopBar />
       <Header />
       <ReviewsWidget />
-      
+
       <main className="flex-1 w-full overflow-hidden">
         {/* 1. Hero Banner Section (Slide Show) */}
         <HeroSlider />
@@ -40,13 +41,7 @@ export default function Home() {
         <ProductCarousel title="Bundle Offers" />
 
         {/* 8. Slide Show 2 (Secondary Hero/Promotional) */}
-        <section className="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center my-8">
-          <img 
-            src="https://soghatekhas.com/cdn/shop/files/Web_banner_2_4_2b23b875-3457-4e94-81fb-9792bedcbc97.jpg?v=1774275131&width=750" 
-            alt="Secondary Slide Show" 
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        </section>
+        <Marquee />
 
         {/* 9. Product Block 4 */}
         <ProductCarousel title="Special Items" />

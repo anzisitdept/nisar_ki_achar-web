@@ -26,7 +26,7 @@ export default function ReturnsPolicyPage() {
           <div>
             <h2 className="font-bold text-gray-900 text-base uppercase mb-2">100% Taste & Transit Guarantee</h2>
             <p>
-              At Soghat-e-Khas, customer satisfaction is our top priority. We take immense pride in crafting authentic homemade pickles and preserves.
+              At Nisar Achar, customer satisfaction is our top priority. We take immense pride in crafting authentic homemade pickles and preserves.
             </p>
           </div>
 

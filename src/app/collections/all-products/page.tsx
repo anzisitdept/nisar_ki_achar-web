@@ -3,77 +3,15 @@
 import React, { useState, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import ReviewCarousel from '@/components/reviews/ReviewCarousel';
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
-
-/* ─── Review Carousel ────────────────────────────────── */
-const REVIEWS = [
-  { stars: 5, title: '5 star for taste', body: 'I tried their aloo bhkhara chatni … Its delicious. Will order again inshaAllah', author: 'Anonymous' },
-  { stars: 5, title: 'best quality', body: 'best quality, packing, everything.', author: '03161717268' },
-  { stars: 5, title: 'Asalam alaikum…', body: 'I got my parcel.. packaging boht hi Allaaa or zaiqa b zabardast JazzakAllah sohhat_te_khaas', author: 'Bin te maryam' },
-  { stars: 5, title: 'Amazing product!', body: 'Received quickly and the taste is authentic desi. Highly recommended for everyone.', author: 'Fatima K.' },
-  { stars: 5, title: 'Excellent packaging', body: 'Very well packed. Quality is outstanding. Will buy again.', author: 'Ahmed R.' },
-];
-
-function ReviewCarousel() {
-  const [idx, setIdx] = useState(0);
-  const visible = 3;
-  const max = REVIEWS.length - visible;
-
-  const prev = () => setIdx(i => Math.max(0, i - 1));
-  const next = () => setIdx(i => Math.min(max, i + 1));
-
-  return (
-    <section style={{ borderBottom: '1px solid #e5e7eb', padding: '32px 0', background: '#fff' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: '24px' }}>
-        {/* Left label */}
-        <div style={{ minWidth: '140px', textAlign: 'center', flexShrink: 0 }}>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: 700, color: '#1a1a1a', lineHeight: 1.2, marginBottom: '6px' }}>
-            Let customers<br />speak for us
-          </p>
-          <div style={{ color: '#f59e0b', fontSize: '18px', marginBottom: '2px' }}>★★★★★</div>
-          <p style={{ fontSize: '12px', color: '#be0000', fontWeight: 600 }}>from 2200 reviews</p>
-        </div>
-
-        {/* Arrow left */}
-        <button
-          onClick={prev}
-          disabled={idx === 0}
-          style={{ background: 'none', border: 'none', cursor: idx === 0 ? 'default' : 'pointer', opacity: idx === 0 ? 0.3 : 1, padding: '4px', flexShrink: 0 }}
-        >
-          <ChevronLeft size={22} color="#333" />
-        </button>
-
-        {/* Cards */}
-        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', overflow: 'hidden' }}>
-          {REVIEWS.slice(idx, idx + visible).map((r, i) => (
-            <div key={i} style={{ padding: '0 8px' }}>
-              <div style={{ color: '#f59e0b', fontSize: '16px', marginBottom: '6px' }}>{'★'.repeat(r.stars)}</div>
-              <p style={{ fontWeight: 700, fontSize: '13px', color: '#1a1a1a', marginBottom: '6px' }}>{r.title}</p>
-              <p style={{ fontSize: '12px', color: '#555', lineHeight: 1.5, marginBottom: '12px' }}>{r.body}</p>
-              <p style={{ fontSize: '12px', color: '#333', fontWeight: 600 }}>{r.author}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Arrow right */}
-        <button
-          onClick={next}
-          disabled={idx >= max}
-          style={{ background: 'none', border: 'none', cursor: idx >= max ? 'default' : 'pointer', opacity: idx >= max ? 0.3 : 1, padding: '4px', flexShrink: 0 }}
-        >
-          <ChevronRight size={22} color="#333" />
-        </button>
-      </div>
-    </section>
-  );
-}
 
 /* ─── Sidebar Section Wrapper ────────────────────────── */
 function SideSection({ title, children }: { title: string; children: React.ReactNode }) {
@@ -254,6 +192,7 @@ function AllProductsContent() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 4989]);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [viewMode, setViewMode] = useState<'grid4' | 'grid3' | 'grid2' | 'list'>('grid4');
+  const [showFilter, setShowFilter] = useState(false);
 
   const allPrices = products.map(p => p.price);
   const globalMax = allPrices.length > 0 ? Math.max(...allPrices) : 4989;
@@ -292,13 +231,98 @@ function AllProductsContent() {
   const displayed = filtered.slice(0, itemsPerPage);
   const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
 
-  const gridCols = viewMode === 'grid4' ? 4 : viewMode === 'grid3' ? 3 : viewMode === 'grid2' ? 2 : 1;
-
   const inStockCount = products.filter(p => p.inStock !== false).length;
   const outStockCount = products.filter(p => p.inStock === false).length;
 
+  // Responsive grid columns
+  const getGridClass = () => {
+    if (viewMode === 'list') return 'grid-cols-1';
+    if (viewMode === 'grid2') return 'grid-cols-2';
+    if (viewMode === 'grid3') return 'grid-cols-2 md:grid-cols-3';
+    return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+  };
+
+  const SidebarContent = () => (
+    <>
+      <SideSection title="Categories">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {categories.map(cat => (
+            <label
+              key={cat.id}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 0', cursor: 'pointer', fontSize: '12px', color: '#333' }}
+            >
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(cat.id)}
+                onChange={() => handleCategoryToggle(cat.id)}
+                style={{ width: '13px', height: '13px', accentColor: '#5e0d0c', cursor: 'pointer' }}
+              />
+              {cat.name.split('(')[0].trim()}
+            </label>
+          ))}
+        </div>
+      </SideSection>
+
+      <SideSection title="Availability">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#333', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={availability.inStock}
+              onChange={() => setAvailability(a => ({ ...a, inStock: !a.inStock }))}
+              style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
+            />
+            In Stock({inStockCount})
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#333', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={availability.outStock}
+              onChange={() => setAvailability(a => ({ ...a, outStock: !a.outStock }))}
+              style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
+            />
+            Out Of Stock({outStockCount})
+          </label>
+        </div>
+      </SideSection>
+
+      <SideSection title="Price">
+        <PriceSlider min={0} max={globalMax} value={priceRange} onChange={setPriceRange} />
+      </SideSection>
+
+      <SideSection title="Bestselling">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {bestSellers.map(p => (
+            <Link key={p.id} href={`/products/${p.slug}`} style={{ display: 'flex', gap: '10px', alignItems: 'center', textDecoration: 'none' }} onClick={() => setShowFilter(false)}>
+              <div style={{ position: 'relative', width: '56px', height: '56px', flexShrink: 0, border: '1px solid #eee', overflow: 'hidden' }}>
+                {p.discountBadge && (
+                  <div style={{ position: 'absolute', top: 0, left: 0, background: '#cc0000', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
+                    {p.discountBadge}
+                  </div>
+                )}
+                {p.isBestSeller && (
+                  <div style={{ position: 'absolute', top: p.discountBadge ? '13px' : '0', left: 0, background: '#cc7700', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
+                    Best Selling
+                  </div>
+                )}
+                <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <div>
+                <p style={{ fontSize: '11px', color: '#222', lineHeight: 1.3, marginBottom: '4px' }}>{p.name.split('(')[0].trim()}</p>
+                <p style={{ fontSize: '11px' }}>
+                  <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}.00</span>
+                  <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}.00</span>
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </SideSection>
+    </>
+  );
+
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+    <div className="max-w-[1280px] mx-auto px-4 md:px-6">
       {/* Breadcrumb */}
       <nav style={{ padding: '12px 0', fontSize: '12px', color: '#555' }}>
         <Link href="/" style={{ color: '#555', textDecoration: 'none' }}>Home</Link>
@@ -307,97 +331,48 @@ function AllProductsContent() {
       </nav>
 
       {/* Main two-column layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '32px', paddingBottom: '60px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 lg:gap-8 pb-14">
 
-        {/* ── Sidebar ── */}
-        <aside style={{ paddingTop: '4px' }}>
-
-          <SideSection title="Categories">
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {categories.map(cat => (
-                <label
-                  key={cat.id}
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 0', cursor: 'pointer', fontSize: '12px', color: '#333' }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(cat.id)}
-                    onChange={() => handleCategoryToggle(cat.id)}
-                    style={{ width: '13px', height: '13px', accentColor: '#5e0d0c', cursor: 'pointer' }}
-                  />
-                  {cat.name.split('(')[0].trim()}
-                </label>
-              ))}
-            </div>
-          </SideSection>
-
-          <SideSection title="Availability">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#333', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={availability.inStock}
-                  onChange={() => setAvailability(a => ({ ...a, inStock: !a.inStock }))}
-                  style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
-                />
-                In Stock({inStockCount})
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#333', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={availability.outStock}
-                  onChange={() => setAvailability(a => ({ ...a, outStock: !a.outStock }))}
-                  style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
-                />
-                Out Of Stock({outStockCount})
-              </label>
-            </div>
-          </SideSection>
-
-          <SideSection title="Price">
-            <PriceSlider min={0} max={globalMax} value={priceRange} onChange={setPriceRange} />
-          </SideSection>
-
-          <SideSection title="Bestselling">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {bestSellers.map(p => (
-                <Link key={p.id} href={`/products/${p.slug}`} style={{ display: 'flex', gap: '10px', alignItems: 'center', textDecoration: 'none' }}>
-                  <div style={{ position: 'relative', width: '56px', height: '56px', flexShrink: 0, border: '1px solid #eee', overflow: 'hidden' }}>
-                    {p.discountBadge && (
-                      <div style={{ position: 'absolute', top: 0, left: 0, background: '#cc0000', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
-                        {p.discountBadge}
-                      </div>
-                    )}
-                    {p.isBestSeller && (
-                      <div style={{ position: 'absolute', top: p.discountBadge ? '13px' : '0', left: 0, background: '#cc7700', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
-                        Best Selling
-                      </div>
-                    )}
-                    <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '11px', color: '#222', lineHeight: 1.3, marginBottom: '4px' }}>{p.name.split('(')[0].trim()}</p>
-                    <p style={{ fontSize: '11px' }}>
-                      <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}.00</span>
-                      <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}.00</span>
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </SideSection>
-
+        {/* ── Sidebar ── (desktop only) */}
+        <aside style={{ paddingTop: '4px' }} className="hidden lg:block">
+          <SidebarContent />
         </aside>
 
+        {/* Mobile Filter Drawer */}
+        {showFilter && (
+          <div className="fixed inset-0 z-[105] lg:hidden">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setShowFilter(false)} />
+            <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl overflow-y-auto p-5 animate-slideUp">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-sm text-gray-900 uppercase">Filters</h3>
+                <button onClick={() => setShowFilter(false)} className="p-1 text-gray-500 hover:text-gray-900" aria-label="Close filters">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <SidebarContent />
+            </div>
+          </div>
+        )}
+
         {/* ── Right content ── */}
-        <div>
+        <div className="min-w-0">
           {/* Section heading */}
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '26px', fontWeight: 400, color: '#1a1a1a', marginBottom: '16px' }}>All Products</h1>
+          <h1 className="font-serif text-xl md:text-2xl font-normal text-gray-900 mb-4">All Products</h1>
 
           {/* Controls bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', paddingBottom: '14px', borderBottom: '1px solid #e5e7eb', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '14px', borderBottom: '1px solid #e5e7eb', marginBottom: '20px', flexWrap: 'wrap' }}>
+
+            {/* Mobile Filter Button */}
+            <button
+              onClick={() => setShowFilter(true)}
+              className="lg:hidden flex items-center gap-1.5 border border-gray-300 rounded px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filter
+            </button>
+
             {/* View As icons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden md:flex">
               <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '6px' }}>View As</span>
               {(['grid4', 'grid3', 'grid2', 'list'] as const).map(mode => (
                 <button
@@ -414,7 +389,7 @@ function AllProductsContent() {
 
             {/* Items per page */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Items Per Page</span>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.06em' }} className="hidden sm:inline">Items</span>
               <div style={{ position: 'relative' }}>
                 <select
                   value={itemsPerPage}
@@ -429,7 +404,7 @@ function AllProductsContent() {
 
             {/* Sort */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Sort By</span>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.06em' }} className="hidden sm:inline">Sort</span>
               <div style={{ position: 'relative' }}>
                 <select
                   value={sortBy}
@@ -453,13 +428,7 @@ function AllProductsContent() {
               No products match your filters.
             </div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-              gap: '1px',
-              background: '#e5e7eb',
-              border: '1px solid #e5e7eb',
-            }}>
+            <div className={`grid ${getGridClass()}`} style={{ gap: '1px', background: '#e5e7eb', border: '1px solid #e5e7eb' }}>
               {displayed.map(product => (
                 <div key={product.id} style={{ background: '#fff' }}>
                   <ProductCard product={product} />

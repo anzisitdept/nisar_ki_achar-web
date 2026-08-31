@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function TrustBadges() {
   const badges = [
-    { id: 1, title: 'Freshly Picked\n& Hygienically\nHandmade', img: 'https://soghatekhas.com/cdn/shop/files/Artboard_1_150x.png' },
-    { id: 2, title: 'Made with Tradition', img: 'https://soghatekhas.com/cdn/shop/files/Artboard_1_copy_150x.png' },
-    { id: 3, title: 'No Added\nPreservatives', img: 'https://soghatekhas.com/cdn/shop/files/Artboard_1_copy_2_150x.png' },
-    { id: 4, title: 'Pakistan’s Most\nTrusted Online\nPickles Store', img: 'https://soghatekhas.com/cdn/shop/files/Artboard_1_copy_3_150x.png' },
+    { id: 1, title: 'Freshly Picked\n& Hygienically\nHandmade', img: 'https://nisarachar.com/cdn/shop/files/Artboard_1_150x.png' },
+    { id: 2, title: 'Made with Tradition', img: 'https://nisarachar.com/cdn/shop/files/Artboard_1_copy_150x.png' },
+    { id: 3, title: 'No Added\nPreservatives', img: 'https://nisarachar.com/cdn/shop/files/Artboard_1_copy_2_150x.png' },
+    { id: 4, title: 'Pakistan’s Most\nTrusted Online\nPickles Store', img: 'https://nisarachar.com/cdn/shop/files/Artboard_1_copy_3_150x.png' },
   ];
 
   return (

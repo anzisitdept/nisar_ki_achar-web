@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { X, CheckCircle, Truck, ShoppingBag, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { X, CheckCircle, Truck, ShieldCheck, MapPin } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { saveOrderToFirestore } from '@/lib/firestoreServices';
+import { loadLocationData, LocationDataSet } from '@/lib/locationData';
+import SearchableSelect from '@/components/checkout/SearchableSelect';
 
 export default function CheckoutModal() {
   const {
@@ -19,18 +21,109 @@ export default function CheckoutModal() {
     fullName: '',
     phone: '',
     address: '',
-    city: 'Lahore',
     notes: ''
+  });
+
+  const [locationData, setLocationData] = useState<LocationDataSet | null>(null);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+  const [location, setLocation] = useState({
+    provinceId: '',
+    districtId: '',
+    tehsilId: ''
+  });
+  const [locationNames, setLocationNames] = useState({
+    province: '',
+    district: '',
+    tehsil: ''
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  useEffect(() => {
+    if (isCheckoutOpen && !locationData) {
+      setLoadingLocations(true);
+      loadLocationData()
+        .then(setLocationData)
+        .catch(() => setLocationData(null))
+        .finally(() => setLoadingLocations(false));
+    }
+  }, [isCheckoutOpen, locationData]);
+
+  const provinces = useMemo(
+    () =>
+      (locationData?.provinces ?? []).map(p => ({
+        value: p.id,
+        label: p.name.en
+      })),
+    [locationData]
+  );
+
+  const districts = useMemo(() => {
+    const list = locationData?.districts ?? [];
+    const filtered = location.provinceId
+      ? list.filter(d => d.parent.id === location.provinceId)
+      : [];
+    return filtered.map(d => ({
+      value: d.id,
+      label: d.name.en
+    }));
+  }, [locationData, location.provinceId]);
+
+  const tehsils = useMemo(() => {
+    const list = locationData?.tehsils ?? [];
+    const filtered = location.districtId
+      ? list.filter(t => t.parent.id === location.districtId)
+      : [];
+    return filtered.map(t => ({
+      value: t.id,
+      label: t.name.en
+    }));
+  }, [locationData, location.districtId]);
+
+  // Auto-select a single available option
+  useEffect(() => {
+    if (districts.length === 1) {
+      setLocation(l => ({
+        ...l,
+        districtId: districts[0].value,
+        tehsilId: ''
+      }));
+      setLocationNames(n => ({ ...n, district: districts[0].label, tehsil: '' }));
+    }
+  }, [districts]);
+
+  useEffect(() => {
+    if (tehsils.length === 1) {
+      setLocation(l => ({ ...l, tehsilId: tehsils[0].value }));
+      setLocationNames(n => ({ ...n, tehsil: tehsils[0].label }));
+    }
+  }, [tehsils]);
+
   if (!isCheckoutOpen) return null;
 
   const deliveryFee = amountNeededForFreeShipping === 0 ? 0 : 200;
   const grandTotal = subtotal + deliveryFee;
+
+  const handleProvinceChange = (value: string, label: string) => {
+    setLocation({ provinceId: value, districtId: '', tehsilId: '' });
+    setLocationNames({ province: label, district: '', tehsil: '' });
+  };
+
+  const handleDistrictChange = (value: string, label: string) => {
+    setLocation(l => ({ ...l, districtId: value, tehsilId: '' }));
+    setLocationNames(n => ({ ...n, district: label, tehsil: '' }));
+  };
+
+  const handleTehsilChange = (value: string, label: string) => {
+    setLocation(l => ({ ...l, tehsilId: value }));
+    setLocationNames(n => ({ ...n, tehsil: label }));
+  };
+
+  const fullLocation = [locationNames.province, locationNames.district, locationNames.tehsil]
+    .filter(Boolean)
+    .join(', ');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,17 +131,31 @@ export default function CheckoutModal() {
       alert('Please fill in all required shipping details.');
       return;
     }
+    if (!location.provinceId || !location.districtId || !location.tehsilId) {
+      alert('Please select your Province, District, and Tehsil.');
+      return;
+    }
 
     setIsSaving(true);
-    const generatedId = `SEK-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const orderPayload = {
-      orderId: generatedId,
       customerName: formData.fullName,
       customerEmail: '',
       customerPhone: formData.phone,
       shippingAddress: formData.address,
-      city: formData.city,
+      city: fullLocation,
+      province: {
+        id: location.provinceId,
+        name: locationNames.province
+      },
+      district: {
+        id: location.districtId,
+        name: locationNames.district
+      },
+      tehsil: {
+        id: location.tehsilId,
+        name: locationNames.tehsil
+      },
       items: cart.map(item => ({
         productId: item.productId,
         name: item.name,
@@ -65,9 +172,9 @@ export default function CheckoutModal() {
     };
 
     // Save to Firestore in real-time for Admin Panel
-    await saveOrderToFirestore(orderPayload);
+    const result = await saveOrderToFirestore(orderPayload);
 
-    setOrderId(generatedId);
+    setOrderId(result.orderId || '');
     setIsSaving(false);
     setIsSubmitted(true);
     clearCart();
@@ -79,9 +186,9 @@ export default function CheckoutModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto font-sans">
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden my-8">
-        
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 backdrop-blur-sm p-2 md:p-4 overflow-y-auto font-sans">
+      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden my-4 md:my-8 max-h-[95vh] md:max-h-[90vh] flex flex-col">
+
         {/* Header */}
         <div className="bg-[#5e0d0c] text-white p-5 flex justify-between items-center">
           <div className="flex items-center space-x-3">
@@ -90,10 +197,10 @@ export default function CheckoutModal() {
               <h2 className="font-bold text-lg leading-tight uppercase tracking-wider">
                 {isSubmitted ? 'Order Confirmed!' : 'Cash on Delivery (COD) Checkout'}
               </h2>
-              <p className="text-xs text-red-200">Official Store - Soghat-e-Khas</p>
+              <p className="text-xs text-red-200">Official Store - Nisar Achar</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={handleClose}
             className="text-white/80 hover:text-white p-2 rounded-full transition"
           >
@@ -125,7 +232,7 @@ export default function CheckoutModal() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Shipping Address:</span>
-                <span className="font-semibold text-gray-800">{formData.address}, {formData.city}</span>
+                <span className="font-semibold text-gray-800">{formData.address}, {fullLocation}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Total Amount (COD):</span>
@@ -135,7 +242,7 @@ export default function CheckoutModal() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href={`https://wa.me/923052396699?text=Hi%20Soghat-e-Khas,%20I%20placed%20order%20${orderId}`}
+                href={`https://wa.me/923052396699?text=Hi%20Nisar%20Achar,%20I%20placed%20order%20${orderId}`}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg flex items-center justify-center space-x-2 transition"
@@ -151,9 +258,8 @@ export default function CheckoutModal() {
             </div>
           </div>
         ) : (
-          /* Checkout Form View */
-          <form onSubmit={handleSubmit} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+          <form onSubmit={handleSubmit} className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-h-[85vh] md:max-h-none overflow-y-auto checkout-modal-body">
+
             {/* Left: Customer Info Form */}
             <div className="space-y-4">
               <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wide border-b pb-2">
@@ -188,20 +294,45 @@ export default function CheckoutModal() {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  City *
-                </label>
-                <select
-                  value={formData.city}
-                  onChange={e => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none bg-white"
-                >
-                  {['Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan', 'Peshawar', 'Quetta', 'Gujranwala', 'Sialkot', 'Hyderabad', 'Sargodha', 'Bahawalpur', 'Other City'].map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+              {/* Location heading */}
+              <div className="pt-1">
+                <div className="flex items-center gap-1.5 border-b pb-2">
+                  <MapPin size={14} className="text-[#5e0d0c]" />
+                  <h4 className="font-bold text-gray-900 text-sm uppercase tracking-wide">
+                    Province, District & Tehsil
+                  </h4>
+                </div>
               </div>
+
+              <SearchableSelect
+                label="Province"
+                placeholder={loadingLocations ? 'Loading provinces...' : 'Select Province'}
+                options={provinces}
+                value={location.provinceId}
+                onChange={handleProvinceChange}
+                disabled={loadingLocations}
+                required
+              />
+
+              <SearchableSelect
+                label="District"
+                placeholder={location.provinceId ? 'Select District' : 'Select Province first'}
+                options={districts}
+                value={location.districtId}
+                onChange={handleDistrictChange}
+                disabled={!location.provinceId}
+                required
+              />
+
+              <SearchableSelect
+                label="Tehsil"
+                placeholder={location.districtId ? 'Select Tehsil' : 'Select District first'}
+                options={tehsils}
+                value={location.tehsilId}
+                onChange={handleTehsilChange}
+                disabled={!location.districtId}
+                required
+              />
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
