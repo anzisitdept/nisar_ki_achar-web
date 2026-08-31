@@ -19,8 +19,8 @@ const abrilFatface = Abril_Fatface({
 });
 
 export const metadata: Metadata = {
-  title: "Nisar Achar | No.1 Pickles Brand in Pakistan",
-  description: "Discover the authentic taste of Pakistan with Nisar Achar, the No.1 pickles brand. Made with premium ingredients and traditional recipes.",
+  title: "Nisar Achar | Authentic Pickle Brand",
+  description: "Nisar Achar brings you handcrafted pickles made with premium ingredients and traditional recipes from Pakistan.",
 };
 
 export default function RootLayout({

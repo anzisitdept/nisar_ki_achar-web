@@ -1,0 +1,23 @@
+## Error Type
+Console Error
+
+## Error Message
+An empty string ("") was passed to the src attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to src instead of an empty string.
+
+
+    at img (<anonymous>:null:null)
+    at <unknown> (src/components/home/MidBanners.tsx:19:11)
+    at Array.map (<anonymous>:null:null)
+    at MidBanners (src/components/home/MidBanners.tsx:13:16)
+    at Home (src\app\page.tsx:39:9)
+
+## Code Frame
+  17 |           className="w-full block relative bg-gray-100 group cursor-pointer"
+  18 |         >
+> 19 |           <img 
+     |           ^
+  20 |             src={banner.image} 
+  21 |             alt={banner.alt || "Promotional Banner"} 
+  22 |             className="w-full h-auto object-cover group-hover:scale-[1.005] transition-transform duration-700"
+
+Next.js version: 16.3.0 (Turbopack)

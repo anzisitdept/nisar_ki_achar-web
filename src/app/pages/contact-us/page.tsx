@@ -165,12 +165,12 @@ export default function ContactUsPage() {
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase">WhatsApp Instant Support</h4>
                     <a
-                      href="https://wa.me/923000000000"
+                      href="https://wa.me/923052396699"
                       target="_blank"
                       rel="noreferrer"
                       className="font-bold text-sm text-green-700 underline mt-0.5 block hover:text-green-800"
                     >
-                      Click to chat on WhatsApp (+92 300 0504030)
+                      Click to chat on WhatsApp (+92 305 2396699)
                     </a>
                   </div>
                 </div>

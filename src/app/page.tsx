@@ -10,6 +10,7 @@ import VideoCarousel from '@/components/home/VideoCarousel';
 import MidBanners from '@/components/home/MidBanners';
 import ContactBlock from '@/components/home/ContactBlock';
 import Marquee from '@/components/home/Marquee';
+import CustomerReviews from '@/components/reviews/ReviewCarousel';
 
 export default function Home() {
   return (
@@ -49,8 +50,13 @@ export default function Home() {
         {/* 10. Product Block 5 */}
         <ProductCarousel title="More to Love" />
 
-        {/* 11. Contact Blocks at Bottom */}
+        {/* 11. Customer Reviews */}
+        <CustomerReviews />
+
+        {/* 12. Contact Blocks at Bottom */}
         <ContactBlock />
+
+
 
       </main>
 

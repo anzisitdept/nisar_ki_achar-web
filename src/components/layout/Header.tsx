@@ -61,14 +61,8 @@ export default function Header() {
       badge: { text: 'NEW ARRIVALS', className: 'bg-[#ec4899] text-white' },
     },
     { label: 'CHUTNEY', href: '/collections/chutney' },
-    { label: 'SUPER FOODS', href: '/collections/super-foods' },
-    { label: 'SYRUPS', href: '/collections/syrup' },
     { label: 'BEST SELLING', href: '/collections/best-selling-pickles' },
-    {
-      label: 'BUNDLES',
-      href: '/collections/bundles',
-      badge: { text: 'MORE SAVINGS', className: 'bg-[#14b8a6] text-white' },
-    },
+
     { label: 'ALL PRODUCTS', href: '/collections/all-products' },
   ];
 
@@ -94,7 +88,7 @@ export default function Header() {
               larger than the wrapper without stretching the row, since
               absolutely-positioned elements are pulled out of normal flow
               and don't contribute to their parent's height. */}
-            <div className="flex-shrink-0 relative h-10 sm:h-12 md:h-14 w-28 sm:w-32 md:w-36">
+            <div className="flex-shrink-0 relative h-12 sm:h-14 md:h-14 w-36 sm:w-40 md:w-36">
               <Link
                 href="/"
                 className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center z-10"
@@ -102,7 +96,7 @@ export default function Header() {
                 <img
                   src="/NISAAR.png"
                   alt="Nisar Achar"
-                  className="h-16 sm:h-20 md:h-24 w-auto object-contain"
+                  className="h-24 sm:h-28 md:h-32 w-auto object-contain"
                 />
               </Link>
             </div>

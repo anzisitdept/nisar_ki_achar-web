@@ -6,7 +6,7 @@ import { useStoreData } from '@/context/StoreDataContext';
 
 export default function MidBanners() {
   const { storeContent } = useStoreData();
-  const banners = storeContent.midBanners;
+  const banners = (storeContent.midBanners || []).filter(b => b && typeof b.image === 'string' && b.image.trim() !== '');
 
   return (
     <section className="w-full py-3 md:py-4 flex flex-col gap-3 md:gap-4 overflow-hidden px-2 md:px-0">

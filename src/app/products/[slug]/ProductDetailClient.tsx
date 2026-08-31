@@ -634,15 +634,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {/* Individual Reviews list */}
         <div style={{ maxWidth: '750px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {(reviews.length > 0 ? reviews : [
-            {
-              id: 'fallback-rev-1',
-              author: 'Faizan Ali',
-              createdAt: '07/18/2026',
-              rating: 5,
-              title: 'Good taste and maza a gia thanks for sughat and',
-              body: 'Good taste and maza a gia thanks for sughat and TCS first service received just 2 days working',
-              isVerified: true
-            },
+
             {
               id: 'fallback-rev-2',
               author: 'Naveed iqbal khan Khan',

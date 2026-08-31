@@ -16,7 +16,6 @@ interface ReviewCard {
 const STATIC_REVIEWS: ReviewCard[] = [
   { stars: 5, title: '5 star for taste', body: 'I tried their aloo bhkhara chatni … Its delicious. Will order again inshaAllah', author: 'Anonymous' },
   { stars: 5, title: 'best quality', body: 'best quality, packing, everything.', author: '03161717268' },
-  { stars: 5, title: 'Asalam alaikum…', body: 'I got my parcel.. packaging boht hi Allaaa or zaiqa b zabardast JazzakAllah sohhat_te_khaas', author: 'Bin te maryam' },
   { stars: 5, title: 'Amazing product!', body: 'Received quickly and the taste is authentic desi. Highly recommended for everyone.', author: 'Fatima K.' },
   { stars: 5, title: 'Excellent packaging', body: 'Very well packed. Quality is outstanding. Will buy again.', author: 'Ahmed R.' }
 ];
@@ -83,28 +82,29 @@ export default function ReviewCarousel() {
   return (
     <section className="border-b border-gray-200 py-10 md:py-16 bg-white overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
-          {/* Left label */}
-          <div className="min-w-[180px] md:text-center text-center flex-shrink-0">
-            <p className="font-serif text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
-              Let customers<br />speak for us
-            </p>
-            <div className="text-[#be0000] text-xl md:text-2xl mb-1.5">★★★★★</div>
-            <p className="text-sm text-[#be0000] font-semibold">from {count} reviews</p>
-          </div>
+        {/* Header label */}
+        <div className="text-center md:text-left mb-6 md:mb-10">
+          <p className="font-serif text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
+            Let customers speak for us
+          </p>
+          <div className="text-[#be0000] text-xl md:text-2xl mb-1.5">★★★★★</div>
+          <p className="text-sm text-[#be0000] font-semibold">from {count} reviews</p>
+        </div>
 
-          {/* Arrow left */}
+        {/* Carousel with overlaid side arrows */}
+        <div className="relative">
+          {/* Arrow left — stuck to left edge, vertically centered */}
           <button
             onClick={() => emblaApi?.scrollPrev()}
             disabled={!canPrev}
-            className="bg-none border-none cursor-pointer p-1 flex-shrink-0 opacity-100 disabled:opacity-30 disabled:cursor-default"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md rounded-full p-1.5 sm:p-2 flex-shrink-0 cursor-pointer opacity-100 disabled:opacity-30 disabled:cursor-default"
             aria-label="Previous review"
           >
-            <ChevronLeft size={28} color="#333" />
+            <ChevronLeft size={24} color="#333" />
           </button>
 
           {/* Cards */}
-          <div className="flex-1 min-w-0 overflow-hidden" ref={emblaRef}>
+          <div className="min-w-0 overflow-hidden px-8 sm:px-10" ref={emblaRef}>
             <div className="flex">
               {items.map((r, i) => (
                 <div key={i} className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 px-3 py-1">
@@ -121,14 +121,14 @@ export default function ReviewCarousel() {
             </div>
           </div>
 
-          {/* Arrow right */}
+          {/* Arrow right — stuck to right edge, vertically centered */}
           <button
             onClick={() => emblaApi?.scrollNext()}
             disabled={!canNext}
-            className="bg-none border-none cursor-pointer p-1 flex-shrink-0 opacity-100 disabled:opacity-30 disabled:cursor-default"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md rounded-full p-1.5 sm:p-2 flex-shrink-0 cursor-pointer opacity-100 disabled:opacity-30 disabled:cursor-default"
             aria-label="Next review"
           >
-            <ChevronRight size={28} color="#333" />
+            <ChevronRight size={24} color="#333" />
           </button>
         </div>
       </div>

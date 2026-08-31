@@ -66,16 +66,6 @@ function YoutubeIcon() {
 export default function Footer() {
   return (
     <footer className="w-full font-sans">
-      {/* Trust Badges Section */}
-      <div className="bg-white py-8 border-t border-gray-100 flex flex-wrap justify-center items-center gap-6 md:gap-12 px-4 text-center">
-        <div className="flex items-center space-x-2 text-[#00b67a]">
-          <span className="text-xl">★★★★★</span>
-          <span className="text-sm font-bold">1726 reviews</span>
-        </div>
-        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1899/files/judge_me_reviews.png" alt="1726 Verified Reviews" className="h-14 w-auto" />
-        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1899/files/judge_me_monthly.png" alt="Monthly Record 217" className="h-14 w-auto" />
-        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1899/files/judge_me_top5.png" alt="Top 5% Stores" className="h-14 w-auto" />
-      </div>
 
       {/* Main Footer Content */}
       <div className="bg-[#4a0808] text-white pt-14 pb-8">
