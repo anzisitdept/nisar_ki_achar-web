@@ -47,7 +47,7 @@ export default function FAQPage() {
 
       <section className="bg-[#fae9e8] py-10 border-b border-red-100">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#5e0d0c] uppercase tracking-wide">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#e60000] uppercase tracking-wide">
             Frequently Asked Questions (FAQ)
           </h1>
           <p className="text-xs md:text-sm text-gray-600 max-w-xl mx-auto mt-2">
@@ -68,12 +68,12 @@ export default function FAQPage() {
                 className="w-full p-5 text-left flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition"
               >
                 <span className="font-bold text-xs md:text-sm text-gray-900 flex items-center space-x-3">
-                  <HelpCircle className="w-4 h-4 text-[#5e0d0c] flex-shrink-0" />
+                  <HelpCircle className="w-4 h-4 text-[#e60000] flex-shrink-0" />
                   <span>{faq.q}</span>
                 </span>
                 <ChevronDown
                   className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
-                    openIdx === idx ? 'transform rotate-180 text-[#5e0d0c]' : ''
+                    openIdx === idx ? 'transform rotate-180 text-[#e60000]' : ''
                   }`}
                 />
               </button>

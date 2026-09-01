@@ -16,12 +16,12 @@ export default function ProductCardClient({ product }: { product: Product }) {
       <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-start p-2">
         <div className="flex flex-col items-start">
           {product.discountBadge && (
-            <div className="bg-[#e95144] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-br">
+            <div className="bg-[#e60000] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-br">
               {product.discountBadge}
             </div>
           )}
           {product.isBestSeller && (
-            <div className="bg-[#fbb03b] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-br">
+            <div className="bg-[#fac80a] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-br">
               Best Seller
             </div>
           )}
@@ -38,23 +38,33 @@ export default function ProductCardClient({ product }: { product: Product }) {
 
       {/* Image */}
       <Link href={`/products/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-50 block">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
-        />
-        <img
-          src={product.hoverImage || product.image}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-        />
+        {product.image && product.image.trim() !== '' ? (
+          <>
+            <img
+              src={product.image}
+              alt={product.name || 'Product'}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
+            />
+            {product.hoverImage && product.hoverImage.trim() !== '' && (
+              <img
+                src={product.hoverImage}
+                alt={product.name || 'Product'}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+              />
+            )}
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs font-medium">
+            No Image
+          </div>
+        )}
       </Link>
 
       {/* Quick Add */}
       <div className="px-3 pt-3 bg-gray-50 border-t border-gray-100">
         <button
           onClick={() => addToCart(product)}
-          className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center space-x-2 transition shadow-xs"
+          className="w-full bg-[#e60000] hover:bg-[#cc0000] text-white font-bold text-xs uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center space-x-2 transition shadow-xs"
         >
           <ShoppingBag className="w-3.5 h-3.5" />
           <span>QUICK ADD</span>
@@ -66,7 +76,7 @@ export default function ProductCardClient({ product }: { product: Product }) {
         <div>
           <Link
             href={`/products/${product.slug}`}
-            className="text-xs font-bold text-gray-900 hover:text-[#5e0d0c] line-clamp-2 block mb-1"
+            className="text-xs font-bold text-gray-900 hover:text-[#e60000] line-clamp-2 block mb-1"
           >
             {product.name}
           </Link>
@@ -82,8 +92,12 @@ export default function ProductCardClient({ product }: { product: Product }) {
           </div>
 
           <div className="flex justify-center items-center space-x-2 text-xs">
-            <span className="text-gray-400 line-through">Rs. {product.originalPrice}</span>
-            <span className="text-[#e95144] font-extrabold text-sm">Rs. {product.price}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</span>
+            )}
+            <span className="text-[#e60000] font-extrabold text-sm">
+              {product.weights && product.weights.length > 1 ? 'from ' : ''}Rs. {product.price?.toLocaleString()}
+            </span>
           </div>
         </div>
 

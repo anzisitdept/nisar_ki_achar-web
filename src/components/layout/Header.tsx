@@ -58,7 +58,7 @@ export default function Header() {
     {
       label: 'MURABBAS',
       href: '/collections/murabba',
-      badge: { text: 'NEW ARRIVALS', className: 'bg-[#ec4899] text-white' },
+      badge: { text: 'NEW ARRIVALS', className: 'bg-[#e60000] text-white' },
     },
     { label: 'CHUTNEY', href: '/collections/chutney' },
     { label: 'BEST SELLING', href: '/collections/best-selling-pickles' },
@@ -77,7 +77,7 @@ export default function Header() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-[#5e0d0c] flex-shrink-0"
+              className="lg:hidden p-2 text-[#e60000] flex-shrink-0"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5 md:w-6 md:h-6" />
@@ -104,7 +104,7 @@ export default function Header() {
             {/* Right Side Info & Actions */}
             <div className="flex flex-col items-end min-w-0">
               {/* Customer Service Text */}
-              <div className="hidden md:block text-[11px] text-[#5e0d0c] font-semibold text-right mb-2">
+              <div className="hidden md:block text-[11px] text-[#e60000] font-semibold text-right mb-2">
                 Customer Service<br />
                 WhatsApp & Cell 0518300036
               </div>
@@ -115,7 +115,7 @@ export default function Header() {
                 {/* Search Bar Trigger */}
                 <button
                   onClick={() => setIsSearchOpen(true)}
-                  className="flex items-center bg-[#fae9e8] text-[#5e0d0c] px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-semibold hover:bg-[#f5d6d4] transition"
+                  className="flex items-center bg-[#fae9e8] text-[#e60000] px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-semibold hover:bg-[#f5d6d4] transition"
                 >
                   <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:mr-2" />
                   <span className="hidden md:inline">Search products...</span>
@@ -124,12 +124,12 @@ export default function Header() {
                 {/* Shopping Cart Button */}
                 <button
                   onClick={() => setIsCartOpen(true)}
-                  className="flex items-center space-x-1.5 text-[#5e0d0c] font-bold text-[10px] md:text-xs hover:opacity-80 transition"
+                  className="flex items-center space-x-1.5 text-[#e60000] font-bold text-[10px] md:text-xs hover:opacity-80 transition"
                 >
                   <div className="relative">
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                     {totalCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-[#e95144] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-extrabold animate-pulse">
+                      <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-extrabold animate-pulse">
                         {totalCount}
                       </span>
                     )}
@@ -140,12 +140,12 @@ export default function Header() {
                 {/* Wishlist Link */}
                 <Link
                   href="/wishlist"
-                  className="flex items-center space-x-1.5 text-[#5e0d0c] font-semibold text-[10px] md:text-xs hover:opacity-80 transition"
+                  className="flex items-center space-x-1.5 text-[#e60000] font-semibold text-[10px] md:text-xs hover:opacity-80 transition"
                 >
                   <div className="relative">
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                     {wishlist.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-[#5e0d0c] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-bold">
+                      <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-bold">
                         {wishlist.length}
                       </span>
                     )}
@@ -156,7 +156,7 @@ export default function Header() {
                 {/* Sign in Link connected to /account */}
                 <Link
                   href="/account"
-                  className="flex items-center space-x-1.5 text-[#5e0d0c] font-bold text-[10px] md:text-xs hover:opacity-80 transition border-l border-gray-200 pl-1.5 sm:pl-3 md:pl-4"
+                  className="flex items-center space-x-1.5 text-[#e60000] font-bold text-[10px] md:text-xs hover:opacity-80 transition border-l border-gray-200 pl-1.5 sm:pl-3 md:pl-4"
                 >
                   <User className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Sign in</span>
@@ -173,10 +173,10 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-[#5e0d0c] font-bold text-xs uppercase tracking-widest relative group py-1 transition-colors"
+                className="text-[#e60000] font-bold text-xs uppercase tracking-widest relative group py-1 transition-colors"
               >
                 {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#5e0d0c] transition-all duration-300 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#e60000] transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </nav>
@@ -222,7 +222,7 @@ export default function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-4 py-4 border-b border-gray-100 text-[#5e0d0c] font-bold text-sm capitalize"
+                  className="flex items-center justify-between px-4 py-4 border-b border-gray-100 text-[#e60000] font-bold text-sm capitalize"
                 >
                   <span className="capitalize">{item.label.charAt(0) + item.label.slice(1).toLowerCase()}</span>
                   {item.badge && (

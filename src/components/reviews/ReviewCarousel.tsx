@@ -23,7 +23,7 @@ const STATIC_REVIEWS: ReviewCard[] = [
 // Fallback count shown when live reviews haven't loaded yet / none exist
 const FALLBACK_REVIEW_COUNT = 2200;
 
-export default function ReviewCarousel() {
+export default function ReviewCarousel({ compact = false }: { compact?: boolean }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -80,15 +80,15 @@ export default function ReviewCarousel() {
   }, [emblaApi, items.length]);
 
   return (
-    <section className="border-b border-gray-200 py-10 md:py-16 bg-white overflow-hidden">
+    <section className={`border-b border-gray-200 bg-white overflow-hidden ${compact ? 'py-6 md:py-8' : 'py-10 md:py-16'}`}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-8">
         {/* Header label */}
         <div className="text-center md:text-left mb-6 md:mb-10">
-          <p className="font-serif text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
+          <p className={`font-serif font-bold text-gray-900 leading-tight mb-2 ${compact ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'}`}>
             Let customers speak for us
           </p>
-          <div className="text-[#be0000] text-xl md:text-2xl mb-1.5">★★★★★</div>
-          <p className="text-sm text-[#be0000] font-semibold">from {count} reviews</p>
+          <div className="text-[#e60000] text-xl md:text-2xl mb-1.5">★★★★★</div>
+          <p className="text-sm text-[#e60000] font-semibold">from {count} reviews</p>
         </div>
 
         {/* Carousel with overlaid side arrows */}
@@ -109,7 +109,7 @@ export default function ReviewCarousel() {
               {items.map((r, i) => (
                 <div key={i} className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 px-3 py-1">
                   <div className="h-full">
-                    <div className="text-[#be0000] text-lg mb-2">
+                    <div className="text-[#e60000] text-lg mb-2">
                       {'★'.repeat(r.stars)}{'☆'.repeat(Math.max(0, 5 - r.stars))}
                     </div>
                     <p className="font-bold text-base text-gray-900 mb-2">{r.title}</p>

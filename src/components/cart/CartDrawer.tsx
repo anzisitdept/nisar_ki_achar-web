@@ -73,7 +73,7 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center space-x-2">
-                <ShoppingBag className="w-5 h-5 text-[#5e0d0c]" />
+                <ShoppingBag className="w-5 h-5 text-[#e60000]" />
                 <h2 className="font-bold text-gray-900 uppercase text-sm tracking-wide">
                   Your Shopping Cart ({cart.reduce((a, c) => a + c.quantity, 0)})
                 </h2>
@@ -92,13 +92,13 @@ export default function CartDrawer() {
             <div className="bg-[#fae9e8] p-3 text-center border-b border-[#f3d2d0] relative">
               <button
                 onClick={() => setShippingDismissed(true)}
-                className="absolute top-1.5 right-2 p-1 text-[#5e0d0c]/50 hover:text-[#5e0d0c] transition-colors z-10"
+                className="absolute top-1.5 right-2 p-1 text-[#e60000]/50 hover:text-[#e60000] transition-colors z-10"
                 aria-label="Close shipping notification"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
               {amountNeededForFreeShipping > 0 ? (
-                <p className="text-xs text-[#5e0d0c] font-semibold pr-5">
+                <p className="text-xs text-[#e60000] font-semibold pr-5">
                   Add <span className="font-bold">Rs. {amountNeededForFreeShipping}</span> more to get <span className="underline">FREE Shipping</span>!
                 </p>
               ) : (
@@ -108,7 +108,7 @@ export default function CartDrawer() {
               )}
               <div className="w-full bg-white/70 h-2 rounded-full mt-2 overflow-hidden">
                 <motion.div 
-                  className="bg-[#5e0d0c] h-full rounded-full"
+                  className="bg-[#e60000] h-full rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
                   transition={{ duration: 0.5 }}
@@ -126,26 +126,32 @@ export default function CartDrawer() {
                   <Link
                     href="/collections/all-products"
                     onClick={() => setIsCartOpen(false)}
-                    className="inline-block bg-[#5e0d0c] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md hover:bg-[#430807] transition"
+                    className="inline-block bg-[#e60000] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md hover:bg-[#cc0000] transition"
                   >
                     Explore Products
                   </Link>
                 </div>
               ) : (
                 cart.map((item) => (
-                  <div key={item.cartId} className="pt-4 first:pt-0 flex space-x-4">
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      className="w-20 h-20 object-cover rounded-lg border border-gray-200 flex-shrink-0"
-                    />
+                  <div key={item.cartId} className="pt-4 first:pt-0 flex space-x-4 items-center">
+                    {item.image && item.image.trim() !== '' ? (
+                      <img 
+                        src={item.image} 
+                        alt={item.name || 'Cart item'} 
+                        className="w-20 h-20 object-cover rounded-lg border border-gray-200 flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gray-100 rounded-lg border border-gray-200 flex-shrink-0 flex items-center justify-center text-[10px] text-gray-400 font-medium">
+                        No Image
+                      </div>
+                    )}
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between items-start">
                           <Link
                             href={`/products/${item.slug}`}
                             onClick={() => setIsCartOpen(false)}
-                            className="font-semibold text-xs text-gray-800 hover:text-[#5e0d0c] line-clamp-2"
+                            className="font-semibold text-xs text-gray-800 hover:text-[#e60000] line-clamp-2"
                           >
                             {item.name}
                           </Link>
@@ -180,7 +186,7 @@ export default function CartDrawer() {
                         </div>
 
                         <div className="text-right">
-                          <span className="text-[#e95144] font-bold text-sm">
+                          <span className="text-[#e60000] font-bold text-sm">
                             Rs. {item.price * item.quantity}
                           </span>
                         </div>
@@ -208,7 +214,7 @@ export default function CartDrawer() {
                     setIsCartOpen(false);
                     setIsCheckoutOpen(true);
                   }}
-                  className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-all"
+                  className="w-full bg-[#e60000] hover:bg-[#cc0000] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-all"
                 >
                   <span>PROCEED TO CHECKOUT</span>
                   <ArrowRight className="w-4 h-4" />

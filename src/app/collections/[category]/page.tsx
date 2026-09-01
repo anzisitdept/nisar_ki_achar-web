@@ -34,7 +34,11 @@ function SideSection({ title, children }: { title: string; children: React.React
 /* ─── Product Card ───────────────────────────── */
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
-  const img = hovered && product.hoverImage ? product.hoverImage : product.image;
+  const primaryImg = (product.image && product.image.trim() !== '') 
+    ? product.image 
+    : ((product.images && product.images[0] && product.images[0].trim() !== '') ? product.images[0] : '');
+  const hoverImg = (product.hoverImage && product.hoverImage.trim() !== '') ? product.hoverImage : primaryImg;
+  const img = hovered && hoverImg ? hoverImg : primaryImg;
 
   return (
     <div
@@ -42,21 +46,27 @@ function ProductCard({ product }: { product: Product }) {
       onMouseLeave={() => setHovered(false)}
       style={{ padding: '12px', textAlign: 'center', background: '#fff', transition: 'all 0.2s ease', position: 'relative' }}
     >
-      <div style={{ position: 'relative', aspectRatio: '1/1', overflow: 'hidden', marginBottom: '12px', background: '#f9f9f9' }}>
-        <img
-          src={img}
-          alt={product.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease', transform: hovered ? 'scale(1.04)' : 'scale(1)' }}
-        />
+      <div style={{ position: 'relative', aspectRatio: '1/1', overflow: 'hidden', marginBottom: '12px', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {img ? (
+          <img
+            src={img}
+            alt={product.name || 'Product'}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease', transform: hovered ? 'scale(1.04)' : 'scale(1)' }}
+          />
+        ) : (
+          <div style={{ color: '#aaa', fontSize: '11px', fontWeight: 500 }}>
+            No Image
+          </div>
+        )}
 
         <div style={{ position: 'absolute', top: 0, left: 0, display: 'flex', flexDirection: 'column', gap: '2px', zIndex: 2 }}>
           {product.discountBadge && (
-            <span style={{ background: '#e95144', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', lineHeight: 1.4 }}>
+            <span style={{ background: '#e60000', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', lineHeight: 1.4 }}>
               {product.discountBadge}
             </span>
           )}
           {product.isBestSeller && (
-            <span style={{ background: '#f39c12', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', lineHeight: 1.4 }}>
+            <span style={{ background: '#fac80a', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', lineHeight: 1.4 }}>
               Best Selling
             </span>
           )}
@@ -70,9 +80,13 @@ function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}>
-        <span style={{ textDecoration: 'line-through' }}>Rs.{product.originalPrice.toLocaleString()}.00</span>
-        <span style={{ color: '#888' }}>from</span>
-        <span style={{ color: '#e95144', fontWeight: 700 }}>Rs.{product.price.toLocaleString()}.00</span>
+        {product.originalPrice && product.originalPrice > product.price && (
+          <span style={{ textDecoration: 'line-through' }}>Rs.{(product.originalPrice || 0).toLocaleString()}.00</span>
+        )}
+        {product.weights && product.weights.length > 1 && (
+          <span style={{ color: '#888' }}>from</span>
+        )}
+        <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{(product.price || 0).toLocaleString()}.00</span>
       </div>
     </div>
   );
@@ -133,7 +147,7 @@ function CategoryInner() {
               onClick={() => setShowFilter(false)}
               style={{
                 fontSize: '12px',
-                color: cat.slug === categorySlug ? '#be0000' : '#444',
+                color: cat.slug === categorySlug ? '#e60000' : '#444',
                 fontWeight: cat.slug === categorySlug ? 700 : 400,
                 textDecoration: 'none',
                 display: 'flex',
@@ -166,7 +180,7 @@ function CategoryInner() {
             <Link key={p.id} href={`/products/${p.slug}`} className="flex gap-2.5 items-center no-underline">
               <div className="relative w-14 h-14 flex-shrink-0 border border-gray-200 overflow-hidden">
                 {p.discountBadge && (
-                  <div className="absolute top-0 left-0 bg-[#e95144] text-white text-[8px] font-bold px-1 py-px z-10">
+                  <div className="absolute top-0 left-0 bg-[#e60000] text-white text-[8px] font-bold px-1 py-px z-10">
                     {p.discountBadge}
                   </div>
                 )}
@@ -176,7 +190,7 @@ function CategoryInner() {
                 <p className="text-[11px] text-gray-800 leading-snug mb-1">{p.name.split('(')[0].trim()}</p>
                 <p className="text-[11px]">
                   <span className="line-through text-gray-400 mr-1">Rs.{p.originalPrice.toLocaleString()}</span>
-                  <span className="text-[#e95144] font-bold">Rs.{p.price.toLocaleString()}</span>
+                  <span className="text-[#e60000] font-bold">Rs.{p.price.toLocaleString()}</span>
                 </p>
               </div>
             </Link>

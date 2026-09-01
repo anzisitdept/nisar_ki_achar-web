@@ -36,6 +36,18 @@ const DEFAULT_STORE_CONTENT: StoreContent = {
       alt: 'Authentic Traditional Taste'
     }
   ],
+  shopByCategory: {
+    title: 'Shop by Category',
+    categoryIds: []
+  },
+  bestSellers: {
+    title: 'Best Sellers',
+    productIds: []
+  },
+  newArrivals: {
+    title: 'New Arrivals',
+    productIds: []
+  },
   midBanners: [
     {
       id: 'mid-1',
@@ -44,6 +56,14 @@ const DEFAULT_STORE_CONTENT: StoreContent = {
       alt: 'Promotional Mid Banner 1'
     }
   ],
+  bundleOffers: {
+    title: 'Bundle Offers',
+    productIds: []
+  },
+  specialItems: {
+    title: 'Special Items',
+    productIds: []
+  },
   reels: []
 };
 
@@ -86,7 +106,7 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    // 3. Subscribe to store_content/homepage document for Announcements, Hero Slides, and Mid Banners
+    // 3. Subscribe to store_content/homepage document for Announcements, Hero Slides, Banners, and Sections
     const unsubStoreContent = subscribeStoreContent((dynamicContent) => {
       if (dynamicContent) {
         setStoreContent({
@@ -96,9 +116,39 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
           heroSlides: dynamicContent.heroSlides && dynamicContent.heroSlides.length > 0 
             ? dynamicContent.heroSlides 
             : DEFAULT_STORE_CONTENT.heroSlides,
+          shopByCategory: {
+            title: dynamicContent.shopByCategory?.title || DEFAULT_STORE_CONTENT.shopByCategory.title,
+            categoryIds: Array.isArray(dynamicContent.shopByCategory?.categoryIds) 
+              ? dynamicContent.shopByCategory.categoryIds 
+              : DEFAULT_STORE_CONTENT.shopByCategory.categoryIds
+          },
+          bestSellers: {
+            title: dynamicContent.bestSellers?.title || DEFAULT_STORE_CONTENT.bestSellers.title,
+            productIds: Array.isArray(dynamicContent.bestSellers?.productIds) 
+              ? dynamicContent.bestSellers.productIds 
+              : DEFAULT_STORE_CONTENT.bestSellers.productIds
+          },
+          newArrivals: {
+            title: dynamicContent.newArrivals?.title || DEFAULT_STORE_CONTENT.newArrivals.title,
+            productIds: Array.isArray(dynamicContent.newArrivals?.productIds) 
+              ? dynamicContent.newArrivals.productIds 
+              : DEFAULT_STORE_CONTENT.newArrivals.productIds
+          },
           midBanners: dynamicContent.midBanners && dynamicContent.midBanners.length > 0 
             ? dynamicContent.midBanners 
             : DEFAULT_STORE_CONTENT.midBanners,
+          bundleOffers: {
+            title: dynamicContent.bundleOffers?.title || DEFAULT_STORE_CONTENT.bundleOffers.title,
+            productIds: Array.isArray(dynamicContent.bundleOffers?.productIds) 
+              ? dynamicContent.bundleOffers.productIds 
+              : DEFAULT_STORE_CONTENT.bundleOffers.productIds
+          },
+          specialItems: {
+            title: dynamicContent.specialItems?.title || DEFAULT_STORE_CONTENT.specialItems.title,
+            productIds: Array.isArray(dynamicContent.specialItems?.productIds) 
+              ? dynamicContent.specialItems.productIds 
+              : DEFAULT_STORE_CONTENT.specialItems.productIds
+          },
           reels: dynamicContent.reels && dynamicContent.reels.length > 0 
             ? dynamicContent.reels 
             : [],

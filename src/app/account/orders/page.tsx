@@ -37,7 +37,7 @@ export default function OrdersPage() {
 
       <section className="bg-[#fae9e8] py-10 border-b border-red-100">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#5e0d0c] uppercase tracking-wide">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#e60000] uppercase tracking-wide">
             My Orders History
           </h1>
         </div>
@@ -49,7 +49,7 @@ export default function OrdersPage() {
             <div key={order.id} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-2">
                 <div>
-                  <span className="font-bold text-sm text-[#5e0d0c]">Order #{order.id}</span>
+                  <span className="font-bold text-sm text-[#e60000]">Order #{order.id}</span>
                   <span className="text-xs text-gray-500 ml-3">Placed on {order.date}</span>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${

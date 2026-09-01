@@ -86,9 +86,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addToCart = (product: Product, selectedWeight?: string, quantity = 1) => {
-    const weight = selectedWeight || product.weights[0] || '500g';
-    const price = product.weightPrices[weight] || product.price;
-    const cartId = `${product.id}-${weight}`;
+    // 1. Determine active weight: use selectedWeight, or product.weights[0], or fallback '1kg'
+    const availableWeights = (product.weights && Array.isArray(product.weights) && product.weights.length > 0)
+      ? product.weights
+      : ['1kg'];
+    const weight = selectedWeight || availableWeights[0] || '1kg';
+
+    // 2. Determine active unit price based on selected weight from product.weightPrices
+    const price = (product.weightPrices && typeof product.weightPrices[weight] === 'number')
+      ? product.weightPrices[weight]
+      : (product.price || 0);
+
+    const originalPrice = product.originalPrice || Math.round(price * 1.35);
+    const cartId = `${product.id || product.slug}-${weight}`;
 
     setCart(prev => {
       const existing = prev.find(item => item.cartId === cartId);
@@ -103,20 +113,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         {
           cartId,
-          productId: product.id,
-          slug: product.slug,
+          productId: product.id || product.slug,
+          slug: product.slug || product.id,
           name: product.name,
-          urduName: product.urduName,
+          urduName: product.urduName || '',
           price,
-          originalPrice: product.originalPrice,
-          image: product.image,
+          originalPrice,
+          image: product.image || (product.images && product.images[0]) || '',
           selectedWeight: weight,
           quantity
         }
       ];
     });
 
-    showToast(`Added "${product.name}" to cart!`);
+    showToast(`Added "${product.name}" (${weight}) to cart!`);
     setIsCartOpen(true);
   };
 
@@ -183,7 +193,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       {children}
       {/* Global Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-[999] bg-[#5e0d0c] text-white px-5 py-3 rounded-lg shadow-2xl flex items-center space-x-3 text-sm font-medium animate-bounce">
+        <div className="fixed bottom-6 right-6 z-[999] bg-[#e60000] text-white px-5 py-3 rounded-lg shadow-2xl flex items-center space-x-3 text-sm font-medium animate-bounce">
           <span className="text-lg">✓</span>
           <span>{toastMessage}</span>
         </div>

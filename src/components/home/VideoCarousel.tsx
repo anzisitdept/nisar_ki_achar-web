@@ -9,7 +9,7 @@ import { useStoreData } from '@/context/StoreDataContext';
 
 export default function VideoCarousel() {
   const { storeContent } = useStoreData();
-  const REELS: ReelItem[] = storeContent.reels;
+  const REELS: ReelItem[] = storeContent.reels || [];
 
   const [emblaRef] = useEmblaCarousel({
     align: 'start',

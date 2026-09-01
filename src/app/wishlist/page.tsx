@@ -25,7 +25,7 @@ export default function WishlistPage() {
 
       <section className="bg-[#fae9e8] py-10 border-b border-red-100">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#5e0d0c] uppercase tracking-wide">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#e60000] uppercase tracking-wide">
             My Wishlist ({wishlistProducts.length})
           </h1>
           <p className="text-xs md:text-sm text-gray-600 max-w-xl mx-auto mt-2">
@@ -41,7 +41,7 @@ export default function WishlistPage() {
             <p className="text-gray-600 font-medium text-sm">Your wishlist is currently empty.</p>
             <Link
               href="/collections/all-products"
-              className="inline-block bg-[#5e0d0c] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#430807] transition"
+              className="inline-block bg-[#e60000] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#cc0000] transition"
             >
               Explore Products
             </Link>
@@ -53,8 +53,12 @@ export default function WishlistPage() {
                 key={product.id}
                 className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition flex flex-col justify-between"
               >
-                <div className="relative aspect-square">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                <div className="relative aspect-square bg-gray-50 flex items-center justify-center">
+                  {product.image && product.image.trim() !== '' ? (
+                    <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-gray-300 text-xs font-medium">No Image</span>
+                  )}
                   <button
                     onClick={() => toggleWishlist(product.id)}
                     className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md text-red-600 hover:bg-red-50"
@@ -67,7 +71,7 @@ export default function WishlistPage() {
                   <div>
                     <Link
                       href={`/products/${product.slug}`}
-                      className="font-bold text-xs text-gray-900 hover:text-[#5e0d0c] line-clamp-2 block"
+                      className="font-bold text-xs text-gray-900 hover:text-[#e60000] line-clamp-2 block"
                     >
                       {product.name}
                     </Link>
@@ -75,12 +79,12 @@ export default function WishlistPage() {
                   </div>
 
                   <div className="mt-4 space-y-3">
-                    <span className="text-[#e95144] font-extrabold text-sm block">
+                    <span className="text-[#e60000] font-extrabold text-sm block">
                       Rs. {product.price}
                     </span>
                     <button
                       onClick={() => addToCart(product)}
-                      className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center space-x-2 transition"
+                      className="w-full bg-[#e60000] hover:bg-[#cc0000] text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center space-x-2 transition"
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
                       <span>ADD TO CART</span>

@@ -15,7 +15,7 @@ export default function ShippingPolicyPage() {
 
       <section className="bg-[#fae9e8] py-10 border-b border-red-100">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#5e0d0c] uppercase tracking-wide">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#e60000] uppercase tracking-wide">
             Shipping & Delivery Policy
           </h1>
         </div>

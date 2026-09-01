@@ -218,19 +218,16 @@ export function subscribeStoreContent(callback: (content: StoreContent | null) =
 export function subscribeProductReviews(productId: string, callback: (reviews: Review[]) => void) {
   try {
     const reviewsRef = collection(db, 'reviews');
-    // Query approved reviews for the current product ordered by createdAt desc
     const q = query(
       reviewsRef,
       where('productId', '==', productId),
-      where('status', '==', 'approved'),
-      orderBy('createdAt', 'desc')
+      where('status', '==', 'approved')
     );
     return onSnapshot(
       q,
       (snapshot) => {
         const reviews = snapshot.docs.map(doc => {
           const data = doc.data();
-          // Map Firestore Timestamp to formatted date string if needed on the client, or pass it as is
           let formattedDate = '';
           if (data.createdAt) {
             const dateObj = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
@@ -248,7 +245,7 @@ export function subscribeProductReviews(productId: string, callback: (reviews: R
             body: data.body,
             isVerified: !!data.isVerified,
             status: data.status,
-            createdAt: formattedDate // Represent as string on UI side for display
+            createdAt: formattedDate
           } as unknown as Review;
         });
         callback(reviews);
@@ -271,8 +268,7 @@ export function subscribeAllApprovedReviews(callback: (reviews: Review[]) => voi
     const reviewsRef = collection(db, 'reviews');
     const q = query(
       reviewsRef,
-      where('status', '==', 'approved'),
-      orderBy('createdAt', 'desc')
+      where('status', '==', 'approved')
     );
     return onSnapshot(
       q,

@@ -90,18 +90,18 @@ export default function VideoModal({ reel, onClose }: VideoModalProps) {
                 <Link 
                   href={`/products/${product.slug}`}
                   onClick={onClose}
-                  className="font-bold text-xs text-gray-900 truncate block hover:text-[#5e0d0c]"
+                  className="font-bold text-xs text-gray-900 truncate block hover:text-[#e60000]"
                 >
                   {product.name}
                 </Link>
                 <div className="flex items-center space-x-2 text-xs">
-                  <span className="text-[#e95144] font-extrabold">Rs. {product.price}</span>
+                  <span className="text-[#e60000] font-extrabold">Rs. {product.price}</span>
                   <span className="text-gray-400 line-through text-[10px]">Rs. {product.originalPrice}</span>
                 </div>
               </div>
               <button
                 onClick={handleAddToCart}
-                className="bg-[#5e0d0c] hover:bg-[#430807] text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center space-x-1 flex-shrink-0 transition"
+                className="bg-[#e60000] hover:bg-[#cc0000] text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center space-x-1 flex-shrink-0 transition"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>ADD</span>

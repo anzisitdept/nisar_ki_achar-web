@@ -107,24 +107,34 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         {product.isBestSeller && (
-          <div style={{ background: '#cc7700', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 7px' }}>
+          <div style={{ background: '#fac80a', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '3px 7px' }}>
             Best Selling
           </div>
         )}
       </div>
 
       {/* Image with hover switch */}
-      <Link href={`/products/${product.slug}`} style={{ display: 'block', overflow: 'hidden', aspectRatio: '1/1', position: 'relative', flexShrink: 0 }}>
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s', opacity: hovered ? 0 : 1 }}
-        />
-        <img
-          src={product.hoverImage || product.image}
-          alt={product.name}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s', opacity: hovered ? 1 : 0 }}
-        />
+      <Link href={`/products/${product.slug}`} style={{ display: 'block', overflow: 'hidden', aspectRatio: '1/1', position: 'relative', flexShrink: 0, background: '#f9f9f9' }}>
+        {product.image && product.image.trim() !== '' ? (
+          <>
+            <img
+              src={product.image}
+              alt={product.name || 'Product'}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s', opacity: hovered && product.hoverImage ? 0 : 1 }}
+            />
+            {product.hoverImage && product.hoverImage.trim() !== '' && (
+              <img
+                src={product.hoverImage}
+                alt={product.name || 'Product'}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.4s', opacity: hovered ? 1 : 0 }}
+              />
+            )}
+          </>
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '11px', fontWeight: 500 }}>
+            No Image
+          </div>
+        )}
       </Link>
 
       {/* Info */}
@@ -135,11 +145,15 @@ function ProductCard({ product }: { product: Product }) {
         >
           {product.name}
         </Link>
-        <div style={{ color: '#f59e0b', fontSize: '13px' }}>{'★'.repeat(Math.round(product.rating))}</div>
+        <div style={{ color: '#fac80a', fontSize: '13px' }}>{'★'.repeat(Math.round(product.rating))}</div>
         <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px' }}>
-          <span style={{ textDecoration: 'line-through' }}>Rs.{product.originalPrice.toLocaleString()}.00</span>
-          <span style={{ color: '#999' }}>from</span>
-          <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{product.price.toLocaleString()}.00</span>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span style={{ textDecoration: 'line-through' }}>Rs.{(product.originalPrice || 0).toLocaleString()}.00</span>
+          )}
+          {product.weights && product.weights.length > 1 && (
+            <span style={{ color: '#999' }}>from</span>
+          )}
+          <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{(product.price || 0).toLocaleString()}.00</span>
         </div>
       </div>
     </div>
@@ -255,7 +269,7 @@ function AllProductsContent() {
                 type="checkbox"
                 checked={selectedCategories.includes(cat.id)}
                 onChange={() => handleCategoryToggle(cat.id)}
-                style={{ width: '13px', height: '13px', accentColor: '#5e0d0c', cursor: 'pointer' }}
+                style={{ width: '13px', height: '13px', accentColor: '#e60000', cursor: 'pointer' }}
               />
               {cat.name.split('(')[0].trim()}
             </label>
@@ -270,7 +284,7 @@ function AllProductsContent() {
               type="checkbox"
               checked={availability.inStock}
               onChange={() => setAvailability(a => ({ ...a, inStock: !a.inStock }))}
-              style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
+              style={{ accentColor: '#e60000', width: '13px', height: '13px' }}
             />
             In Stock({inStockCount})
           </label>
@@ -279,7 +293,7 @@ function AllProductsContent() {
               type="checkbox"
               checked={availability.outStock}
               onChange={() => setAvailability(a => ({ ...a, outStock: !a.outStock }))}
-              style={{ accentColor: '#5e0d0c', width: '13px', height: '13px' }}
+              style={{ accentColor: '#e60000', width: '13px', height: '13px' }}
             />
             Out Of Stock({outStockCount})
           </label>
@@ -301,7 +315,7 @@ function AllProductsContent() {
                   </div>
                 )}
                 {p.isBestSeller && (
-                  <div style={{ position: 'absolute', top: p.discountBadge ? '13px' : '0', left: 0, background: '#cc7700', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
+                  <div style={{ position: 'absolute', top: p.discountBadge ? '13px' : '0', left: 0, background: '#fac80a', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '1px 4px', zIndex: 1, lineHeight: 1.4 }}>
                     Best Selling
                   </div>
                 )}
@@ -311,7 +325,7 @@ function AllProductsContent() {
                 <p style={{ fontSize: '11px', color: '#222', lineHeight: 1.3, marginBottom: '4px' }}>{p.name.split('(')[0].trim()}</p>
                 <p style={{ fontSize: '11px' }}>
                   <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}.00</span>
-                  <span style={{ color: '#be0000', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}.00</span>
+                  <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}.00</span>
                 </p>
               </div>
             </Link>

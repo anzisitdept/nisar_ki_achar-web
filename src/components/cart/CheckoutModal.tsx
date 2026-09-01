@@ -190,7 +190,7 @@ export default function CheckoutModal() {
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden my-4 md:my-8 max-h-[95vh] md:max-h-[90vh] flex flex-col">
 
         {/* Header */}
-        <div className="bg-[#5e0d0c] text-white p-5 flex justify-between items-center">
+        <div className="bg-[#e60000] text-white p-5 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <Truck className="w-6 h-6" />
             <div>
@@ -218,7 +218,7 @@ export default function CheckoutModal() {
             <div>
               <h3 className="text-2xl font-bold text-gray-900">Thank You For Your Order!</h3>
               <p className="text-sm text-gray-600 mt-1">
-                Your order number is <span className="font-bold text-[#5e0d0c]">{orderId}</span>
+                Your order number is <span className="font-bold text-[#e60000]">{orderId}</span>
               </p>
               <p className="text-xs text-gray-500 mt-2">
                 Our team will call or WhatsApp you on <span className="font-semibold text-gray-800">{formData.phone}</span> to verify your delivery address before dispatch.
@@ -236,7 +236,7 @@ export default function CheckoutModal() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Total Amount (COD):</span>
-                <span className="font-extrabold text-[#e95144] text-sm">Rs. {grandTotal}</span>
+                <span className="font-extrabold text-[#e60000] text-sm">Rs. {grandTotal}</span>
               </div>
             </div>
 
@@ -251,7 +251,7 @@ export default function CheckoutModal() {
               </a>
               <button
                 onClick={handleClose}
-                className="bg-[#5e0d0c] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#430807] transition"
+                className="bg-[#e60000] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#cc0000] transition"
               >
                 Continue Shopping
               </button>
@@ -276,7 +276,7 @@ export default function CheckoutModal() {
                   placeholder="e.g. Muhammad Ali"
                   value={formData.fullName}
                   onChange={e => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
                 />
               </div>
 
@@ -290,14 +290,14 @@ export default function CheckoutModal() {
                   placeholder="0300 1234567"
                   value={formData.phone}
                   onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
                 />
               </div>
 
               {/* Location heading */}
               <div className="pt-1">
                 <div className="flex items-center gap-1.5 border-b pb-2">
-                  <MapPin size={14} className="text-[#5e0d0c]" />
+                  <MapPin size={14} className="text-[#e60000]" />
                   <h4 className="font-bold text-gray-900 text-sm uppercase tracking-wide">
                     Province, District & Tehsil
                   </h4>
@@ -344,7 +344,7 @@ export default function CheckoutModal() {
                   placeholder="House #, Street #, Sector/Area, Nearby Landmark"
                   value={formData.address}
                   onChange={e => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
                 />
               </div>
 
@@ -357,7 +357,7 @@ export default function CheckoutModal() {
                   placeholder="e.g. Call before delivery"
                   value={formData.notes}
                   onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
                 />
               </div>
             </div>
@@ -392,7 +392,7 @@ export default function CheckoutModal() {
                       {deliveryFee === 0 ? <span className="text-green-600 font-bold">FREE</span> : `Rs. ${deliveryFee}`}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm font-extrabold border-t pt-2 text-[#5e0d0c]">
+                  <div className="flex justify-between text-sm font-extrabold border-t pt-2 text-[#e60000]">
                     <span>Total Amount</span>
                     <span>Rs. {grandTotal}</span>
                   </div>
@@ -407,7 +407,7 @@ export default function CheckoutModal() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="w-full bg-[#5e0d0c] hover:bg-[#430807] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow-lg transition-all disabled:opacity-50"
+                className="w-full bg-[#e60000] hover:bg-[#cc0000] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow-lg transition-all disabled:opacity-50"
               >
                 {isSaving ? 'CONFIRMING ORDER...' : 'PLACE CONFIRMED COD ORDER'}
               </button>

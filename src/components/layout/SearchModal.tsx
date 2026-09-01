@@ -153,7 +153,7 @@ export default function SearchModal() {
                       <button
                         key={term}
                         onClick={() => setQuery(term)}
-                        className="bg-gray-100 hover:bg-[#fae9e8] hover:text-[#5e0d0c] text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-md transition flex items-center gap-1.5"
+                        className="bg-gray-100 hover:bg-[#fae9e8] hover:text-[#e60000] text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-md transition flex items-center gap-1.5"
                       >
                         <Search size={12} className="text-gray-400" />
                         <span>{term}</span>
@@ -200,7 +200,7 @@ export default function SearchModal() {
                         {results.map(product => (
                           <div
                             key={product.id}
-                            className="bg-white border border-gray-100 rounded-lg p-2 hover:border-[#5e0d0c] hover:shadow-md transition flex flex-col justify-between group"
+                            className="bg-white border border-gray-100 rounded-lg p-2 hover:border-[#e60000] hover:shadow-md transition flex flex-col justify-between group"
                           >
                             <Link
                               href={`/products/${product.slug}`}
@@ -214,19 +214,19 @@ export default function SearchModal() {
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 {product.discountBadge && (
-                                  <span className="absolute top-1 left-1 bg-[#e95144] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-xs">
+                                  <span className="absolute top-1 left-1 bg-[#e60000] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-xs">
                                     {product.discountBadge}
                                   </span>
                                 )}
                               </div>
 
-                              <p className="font-semibold text-xs text-gray-900 group-hover:text-[#5e0d0c] line-clamp-2 leading-tight mb-1 text-center">
+                              <p className="font-semibold text-xs text-gray-900 group-hover:text-[#e60000] line-clamp-2 leading-tight mb-1 text-center">
                                 {product.name}
                               </p>
                             </Link>
 
                             <div className="text-center mt-1">
-                              <span className="text-xs font-bold text-[#e95144]">
+                              <span className="text-xs font-bold text-[#e60000]">
                                 Rs.{product.price.toLocaleString()}
                               </span>
                               {product.originalPrice > product.price && (

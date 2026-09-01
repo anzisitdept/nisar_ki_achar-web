@@ -121,6 +121,7 @@ export interface HeroSlide {
   desktopImage: string;
   mobileImage: string;
   alt: string;
+  link?: string;
 }
 
 export interface Banner {
@@ -137,9 +138,24 @@ export interface ReelItem {
   productSlug: string;
 }
 
+export interface ShopByCategorySection {
+  title: string;
+  categoryIds: string[]; // Ordered list of category IDs or slugs
+}
+
+export interface ProductCuratedSection {
+  title: string;
+  productIds: string[]; // Ordered list of product IDs or slugs
+}
+
 export interface StoreContent {
   topBarMessages: string[];
   heroSlides: HeroSlide[];
+  shopByCategory: ShopByCategorySection;
+  bestSellers: ProductCuratedSection;
+  newArrivals: ProductCuratedSection;
   midBanners: Banner[];
-  reels: ReelItem[];
+  bundleOffers: ProductCuratedSection;
+  specialItems: ProductCuratedSection;
+  reels?: ReelItem[];
 }

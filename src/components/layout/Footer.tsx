@@ -68,7 +68,7 @@ export default function Footer() {
     <footer className="w-full font-sans">
 
       {/* Main Footer Content */}
-      <div className="bg-[#4a0808] text-white pt-14 pb-8">
+      <div className="bg-[#e60000] text-white pt-14 pb-8">
         <div className="container mx-auto px-4 lg:px-8 max-w-[1320px]">
 
           {/* 4-Column Grid matching official layout */}
@@ -122,11 +122,11 @@ export default function Footer() {
                   type="email"
                   required
                   placeholder="Enter Your Email Address"
-                  className="w-full px-3 py-2.5 bg-white text-[#4a0808] text-xs font-medium focus:outline-none placeholder-gray-500 rounded-none"
+                  className="w-full px-3 py-2.5 bg-white text-[#e60000] text-xs font-medium focus:outline-none placeholder-gray-500 rounded-none"
                 />
                 <button
                   type="submit"
-                  className="bg-white text-[#4a0808] font-bold text-xs tracking-wider uppercase px-4 py-2.5 hover:bg-gray-100 transition rounded-none flex-shrink-0"
+                  className="bg-white text-[#e60000] font-bold text-xs tracking-wider uppercase px-4 py-2.5 hover:bg-gray-100 transition rounded-none flex-shrink-0"
                 >
                   SUBMIT
                 </button>
@@ -139,7 +139,7 @@ export default function Footer() {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-full bg-white text-[#4a0808] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
+                  className="w-9 h-9 rounded-full bg-white text-[#e60000] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
                   title="Facebook"
                 >
                   <FacebookIcon />
@@ -149,7 +149,7 @@ export default function Footer() {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-full bg-white text-[#4a0808] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
+                  className="w-9 h-9 rounded-full bg-white text-[#e60000] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
                   title="Instagram"
                 >
                   <InstagramIcon />
@@ -159,7 +159,7 @@ export default function Footer() {
                   href="https://tiktok.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-full bg-white text-[#4a0808] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
+                  className="w-9 h-9 rounded-full bg-white text-[#e60000] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
                   title="TikTok"
                 >
                   <TiktokIcon />
@@ -169,7 +169,7 @@ export default function Footer() {
                   href="https://youtube.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-full bg-white text-[#4a0808] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
+                  className="w-9 h-9 rounded-full bg-white text-[#e60000] flex items-center justify-center transition-all duration-200 hover:bg-transparent hover:text-white hover:ring-2 hover:ring-white"
                   title="YouTube"
                 >
                   <YoutubeIcon />
@@ -207,7 +207,7 @@ export default function Footer() {
               <div className="mt-6 pt-5 border-t border-white/20">
                 <p className="text-[10px] text-gray-300/70 mb-2">Developed By</p>
                 <div className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-full bg-[#e6b800] text-[#4a0808] flex items-center justify-center font-bold text-sm">A</span>
+                  <span className="w-7 h-7 rounded-full bg-[#e6b800] text-[#e60000] flex items-center justify-center font-bold text-sm">A</span>
                   <span className="font-bold tracking-wide text-[#e6b800]">ANZI &amp; Co.</span>
                 </div>
               </div>

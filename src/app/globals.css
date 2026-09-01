@@ -5,13 +5,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-josefin-sans);
   --font-serif: var(--font-abril-fatface);
-  --color-primary: #5e0d0c;
+  --color-primary: #e60000;
   --color-secondary: #fae9e8;
-  --color-[#5e0d0c]: #5e0d0c;
-  --color-[#fae9e8]: #fae9e8;
-  --color-[#e95144]: #e95144;
-  --color-sale: #e95144;
-  --color-accent: #fbb03b;
+  --color-sale: #e60000;
+  --color-accent: #fac80a;
   --color-surface: #f9fafb;
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
@@ -20,10 +17,10 @@
 :root {
   --background: #ffffff;
   --foreground: #232323;
-  --color-primary: #5e0d0c;
+  --color-primary: #e60000;
   --color-secondary: #fae9e8;
-  --color-sale: #e95144;
-  --color-accent: #fbb03b;
+  --color-sale: #e60000;
+  --color-accent: #fac80a;
   --color-surface: #f9fafb;
   --color-text: #232323;
   --color-muted: #6b7280;
@@ -50,11 +47,11 @@ h1, h2, h3, h4, h5, h6 {
   background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-  background: #5e0d0c;
+  background: #e60000;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #430807;
+  background: #cc0000;
 }
 
 @keyframes fadeIn {

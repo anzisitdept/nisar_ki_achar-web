@@ -20,7 +20,7 @@ export default function TopBar() {
   if (messages.length === 0) return null;
 
   return (
-    <div className="bg-[#5e0d0c] text-white text-xs md:text-[13px] font-bold py-2 md:py-2.5 px-4 flex items-center justify-center select-none overflow-hidden">
+    <div className="bg-[#e60000] text-white text-xs md:text-[13px] font-bold py-2 md:py-2.5 px-4 flex items-center justify-center select-none overflow-hidden">
       <div className="flex-1 text-center truncate px-1 md:px-2">
         <span
           key={currentIndex}

@@ -132,9 +132,9 @@ export default function SearchableSelect({
         aria-expanded={isOpen}
         aria-controls={isOpen ? `${label}-listbox` : undefined}
         aria-labelledby={`${label}-aria`}
-        className={`w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5e0d0c] outline-none bg-white text-left flex items-center justify-between gap-2 transition ${
+        className={`w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none bg-white text-left flex items-center justify-between gap-2 transition ${
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-gray-400'
-        } ${isOpen ? 'ring-2 ring-[#5e0d0c] border-[#5e0d0c]' : ''}`}
+        } ${isOpen ? 'ring-2 ring-[#e60000] border-[#e60000]' : ''}`}
       >
         <span className={`truncate ${selected ? 'text-gray-900' : 'text-gray-400'}`}>
           {selected ? selected.label : placeholder}
@@ -183,11 +183,11 @@ export default function SearchableSelect({
                     onMouseEnter={() => setHighlightedIndex(idx)}
                     onClick={() => selectOption(o)}
                     className={`px-3 py-2 text-xs cursor-pointer flex items-center justify-between gap-2 ${
-                      isHighlighted ? 'bg-[#fae9e8] text-[#5e0d0c]' : 'text-gray-800'
+                      isHighlighted ? 'bg-[#fae9e8] text-[#e60000]' : 'text-gray-800'
                     } ${isSelected ? 'font-semibold' : ''}`}
                   >
                     <span className="truncate">{o.label}</span>
-                    {isSelected && <Check size={14} className="flex-shrink-0 text-[#5e0d0c]" />}
+                    {isSelected && <Check size={14} className="flex-shrink-0 text-[#e60000]" />}
                   </li>
                 );
               })
