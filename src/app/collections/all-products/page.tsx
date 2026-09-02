@@ -8,7 +8,7 @@ import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
-import ReviewCarousel from '@/components/reviews/ReviewCarousel';
+
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
@@ -462,8 +462,6 @@ export default function AllProductsPage() {
     <>
       <TopBar />
       <Header />
-      <ReviewCarousel />
-
       <Suspense fallback={
         <div style={{ padding: '60px', textAlign: 'center', color: '#999', fontSize: '13px' }}>
           Loading Catalog…

@@ -9,7 +9,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import ReviewsWidget from '@/components/layout/ReviewsWidget';
-import ReviewCarousel from '@/components/reviews/ReviewCarousel';
+
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/hooks/useCart';
@@ -317,8 +317,6 @@ export default function CategoryCollectionPage() {
     <>
       <TopBar />
       <Header />
-      <ReviewCarousel />
-
       <Suspense fallback={<div style={{ padding: '60px', textAlign: 'center', color: '#888' }}>Loading Category…</div>}>
         <CategoryInner />
       </Suspense>

@@ -133,13 +133,13 @@ import { Review, StoreContent } from '@/types';
 
 /* ─── Submit Review to Firestore ─────────────────────── */
 export interface ReviewPayload {
-  productId: string;
+  productId?: string;
   author: string;
   rating: number;
   title: string;
   body: string;
   isVerified: boolean;
-  status: 'pending' | 'approved' | 'rejected';
+  status?: 'pending' | 'approved' | 'rejected';
 }
 
 export async function saveReviewToFirestore(review: ReviewPayload) {
@@ -147,7 +147,13 @@ export async function saveReviewToFirestore(review: ReviewPayload) {
     const reviewsRef = collection(db, 'reviews');
     const generatedReviewId = `REV-${Math.floor(100000 + Math.random() * 900000)}`;
     const docRef = await addDoc(reviewsRef, {
-      ...review,
+      productId: review.productId || 'store',
+      author: review.author,
+      rating: review.rating,
+      title: review.title,
+      body: review.body,
+      isVerified: review.isVerified,
+      status: review.status || 'approved',
       reviewId: generatedReviewId,
       createdAt: serverTimestamp()
     });
@@ -276,17 +282,24 @@ export function subscribeAllApprovedReviews(callback: (reviews: Review[]) => voi
         const reviews = snapshot.docs.map(doc => {
           const data = doc.data();
           const rating = typeof data.rating === 'number' ? data.rating : 5;
+          let formattedDate = '';
+          if (data.createdAt) {
+            const dateObj = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+            formattedDate = isNaN(dateObj.getTime()) ? new Date().toLocaleDateString('en-US') : dateObj.toLocaleDateString('en-US');
+          } else {
+            formattedDate = new Date().toLocaleDateString('en-US');
+          }
           return {
             id: doc.id,
             reviewId: data.reviewId || doc.id,
-            productId: data.productId,
-            author: data.author,
+            productId: data.productId || 'store',
+            author: data.author || 'Anonymous',
             rating,
-            title: data.title,
-            body: data.body,
+            title: data.title || '',
+            body: data.body || '',
             isVerified: !!data.isVerified,
-            status: data.status,
-            createdAt: data.createdAt
+            status: data.status || 'approved',
+            createdAt: formattedDate
           } as Review;
         });
         callback(reviews);

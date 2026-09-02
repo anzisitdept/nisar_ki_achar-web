@@ -7,9 +7,24 @@ import {
   subscribeAllApprovedReviews,
   saveReviewToFirestore
 } from '@/lib/firestoreServices';
+import { useStoreData } from '@/context/StoreDataContext';
 
 interface CustomerReviewsSectionProps {
   productId?: string;
+}
+
+function formatReviewDate(createdAt: any): string {
+  if (!createdAt) return new Date().toLocaleDateString('en-US');
+  if (typeof createdAt === 'string') return createdAt;
+  if (typeof createdAt === 'object') {
+    if (typeof createdAt.toDate === 'function') {
+      return createdAt.toDate().toLocaleDateString('en-US');
+    }
+    if (typeof createdAt.seconds === 'number') {
+      return new Date(createdAt.seconds * 1000).toLocaleDateString('en-US');
+    }
+  }
+  return String(createdAt);
 }
 
 const FALLBACK_REVIEWS: {
@@ -42,8 +57,10 @@ const FALLBACK_REVIEWS: {
 ];
 
 export default function CustomerReviewsSection({ productId }: CustomerReviewsSectionProps) {
+  const { products } = useStoreData();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [writeReviewOpen, setWriteReviewOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string>(productId || 'store');
   const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, title: '', body: '' });
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [submitSuccessMsg, setSubmitSuccessMsg] = useState<string | null>(null);
@@ -81,27 +98,37 @@ export default function CustomerReviewsSection({ productId }: CustomerReviewsSec
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productId) {
-      alert('Please open the reviews from a product page to write a review.');
-      return;
-    }
     if (!reviewForm.author.trim() || !reviewForm.title.trim() || !reviewForm.body.trim()) {
       alert('Please fill in all required fields.');
       return;
     }
     setIsSubmittingReview(true);
+    const targetProductId = productId || selectedProductId || 'store';
     const res = await saveReviewToFirestore({
-      productId,
-      author: reviewForm.author,
+      productId: targetProductId,
+      author: reviewForm.author.trim(),
       rating: reviewForm.rating,
-      title: reviewForm.title,
-      body: reviewForm.body,
-      isVerified: false,
-      status: 'pending'
+      title: reviewForm.title.trim(),
+      body: reviewForm.body.trim(),
+      isVerified: true,
+      status: 'approved'
     });
     setIsSubmittingReview(false);
     if (res.success) {
-      setSubmitSuccessMsg('Shukriya! Your review has been submitted for moderation and will appear once approved by the administrator.');
+      setSubmitSuccessMsg('Shukriya! Your review has been submitted successfully.');
+      const newReview: Review = {
+        id: res.id || `rev-${Date.now()}`,
+        reviewId: res.reviewId || `REV-${Date.now()}`,
+        productId: targetProductId,
+        author: reviewForm.author.trim(),
+        rating: reviewForm.rating,
+        title: reviewForm.title.trim(),
+        body: reviewForm.body.trim(),
+        isVerified: true,
+        status: 'approved',
+        createdAt: new Date().toLocaleDateString('en-US')
+      };
+      setReviews(prev => [newReview, ...prev.filter(r => r.id !== newReview.id)]);
       setReviewForm({ author: '', rating: 5, title: '', body: '' });
       setTimeout(() => setSubmitSuccessMsg(null), 8000);
       setWriteReviewOpen(false);
@@ -187,6 +214,22 @@ export default function CustomerReviewsSection({ productId }: CustomerReviewsSec
               </div>
             </div>
 
+            {!productId && products && products.length > 0 && (
+              <div className="mb-3.5">
+                <label className="block text-xs font-semibold mb-1 text-gray-700">Product / Store</label>
+                <select
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                  className="w-full p-2.5 border border-gray-300 rounded-md text-xs sm:text-sm bg-white focus:outline-none focus:border-[#e60000]"
+                >
+                  <option value="store">General Store Review (عام اسٹور ریویو)</option>
+                  {products.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="mb-3.5">
               <label className="block text-xs font-semibold mb-1 text-gray-700">Review Title *</label>
               <input
@@ -239,7 +282,7 @@ export default function CustomerReviewsSection({ productId }: CustomerReviewsSec
               <div style={{ color: '#e60000', fontSize: '14px' }}>
                 {'★'.repeat(rev.rating || 5)}{'☆'.repeat(5 - (rev.rating || 5))}
               </div>
-              <span style={{ fontSize: '11px', color: '#999' }}>{rev.createdAt}</span>
+              <span style={{ fontSize: '11px', color: '#999' }}>{formatReviewDate(rev.createdAt)}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
               <span style={{ fontWeight: 700, fontSize: '13px', color: '#111' }}>{rev.author}</span>
