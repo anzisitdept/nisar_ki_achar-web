@@ -3,10 +3,9 @@ import { NavigationItem } from '@/types';
 export const MAIN_NAVIGATION: NavigationItem[] = [
   { label: 'NEW ARRIVALS', href: '/collections/new-arrivals' },
   { label: 'PICKLES', href: '/collections/pickles' },
-  { label: 'MURABBAS', href: '/collections/murabba' },
+  { label: 'ACHAR', href: '/collections/achar' },
   { label: 'CHUTNEY', href: '/collections/chutney' },
   { label: 'SUPER FOODS', href: '/collections/super-foods' },
-  { label: 'SYRUPS', href: '/collections/syrup' },
   { label: 'BEST SELLING', href: '/collections/best-selling-pickles' },
   { label: 'BUNDLES', href: '/collections/bundles' },
   { label: 'ALL PRODUCTS', href: '/collections/all-products' }

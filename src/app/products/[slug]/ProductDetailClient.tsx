@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Heart, Share2, Eye, Truck, MessageCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Share2, MessageCircle } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import CustomerReviewsSection from '@/components/reviews/CustomerReviewsSection';
+
+import { getProductEffectivePrice } from '@/lib/productPrice';
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const { addToCart, toggleWishlist, isInWishlist, setIsCheckoutOpen } = useCart();
@@ -15,18 +17,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     ? product.weights
     : ['1kg'];
 
-  const [selectedWeight, setSelectedWeight] = useState<string>(availableWeights[0] || '1kg');
+  // Prioritize 1kg as the default selected weight if available
+  const defaultWeight = availableWeights.find(w => w.toLowerCase().replace(/\s+/g, '') === '1kg') || availableWeights[0] || '1kg';
+  const [selectedWeight, setSelectedWeight] = useState<string>(defaultWeight);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'benefits'>('description');
 
   // Dynamic price calculation based on selected weight
-  const currentPrice = (product.weightPrices && typeof product.weightPrices[selectedWeight] === 'number')
-    ? product.weightPrices[selectedWeight]
-    : (product.price || 0);
+  const currentPrice = getProductEffectivePrice(product, selectedWeight);
 
-  const originalPrice = product.originalPrice && product.originalPrice > currentPrice
+  const originalPrice = (typeof product.originalPrice === 'number' && product.originalPrice > currentPrice)
     ? product.originalPrice
-    : Math.round(currentPrice * 1.35);
+    : 0;
 
   const subtotal = currentPrice * quantity;
 
@@ -41,7 +43,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     const weights = (product.weights && Array.isArray(product.weights) && product.weights.length > 0)
       ? product.weights
       : ['1kg'];
-    setSelectedWeight(weights[0] || '1kg');
+    const defaultW = weights.find(w => w.toLowerCase().replace(/\s+/g, '') === '1kg') || weights[0] || '1kg';
+    setSelectedWeight(defaultW);
     const img = (product.image && product.image.trim() !== '') 
       ? product.image 
       : (product.images && product.images[0] && product.images[0].trim() !== '' ? product.images[0] : '');
@@ -79,7 +82,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   const handleBargainClick = () => {
     const message = encodeURIComponent(`Hi! I am looking for a discount on ${product.name} (${selectedWeight}).`);
-    window.open(`https://wa.me/923001234567?text=${message}`, '_blank');
+    window.open(`https://wa.me/923341677114?text=${message}`, '_blank');
   };
 
   return (
@@ -226,9 +229,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <div className={`grid gap-2.5 ${availableWeights.length === 1 ? 'grid-cols-1 max-w-[200px]' : availableWeights.length === 2 ? 'grid-cols-2' : availableWeights.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'}`}>
               {availableWeights.map(w => {
                 const active = selectedWeight === w;
-                const weightPrice = (product.weightPrices && typeof product.weightPrices[w] === 'number') 
-                  ? product.weightPrices[w] 
-                  : product.price;
+                const weightPrice = getProductEffectivePrice(product, w);
 
                 return (
                   <button
@@ -385,19 +386,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {product.inStock !== false && <span className="font-normal text-[11px] sm:text-xs opacity-90 tracking-normal">(ابھی خریدیں)</span>}
           </button>
 
-          {/* Delivery & Live Counter Card */}
-          <div style={{ background: '#fdfbfb', border: '1px solid #f0e6e6', borderRadius: '6px', padding: '16px', fontSize: '12px', color: '#444', lineHeight: 1.6, marginBottom: '24px' }}>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '8px' }}>
-              <Truck size={18} color="#111" style={{ flexShrink: 0 }} />
-              <div>
-                <strong>Delivery Time:</strong> Place your order within the next <strong>2 hours 33 minutes</strong> to get it soon! Your package is expected to arrive between <span style={{ textDecoration: 'underline' }}>Friday, 28 Aug</span> and <span style={{ textDecoration: 'underline' }}>Tuesday, 01 Sep</span>.
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666' }}>
-              <Eye size={16} color="#666" />
-              <span><strong>125 customers</strong> are viewing this product</span>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -406,10 +394,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       <div className="mt-10 md:mt-16 border-t border-gray-200 pt-8 md:pt-10 overflow-x-hidden">
         
         {/* Description Tabs Header */}
-        <div className="flex justify-center border-b border-gray-200 mb-8">
+        <div className="flex justify-start gap-2 md:gap-4 border-b border-gray-200 mb-8">
           <button
             onClick={() => setActiveTab('description')}
-            className={`pb-3 px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
+            className={`pb-3 px-3 md:px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
               activeTab === 'description' ? 'border-[#111] text-[#111]' : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
           >
@@ -418,7 +406,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {product.ingredients && (
             <button
               onClick={() => setActiveTab('ingredients')}
-              className={`pb-3 px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
+              className={`pb-3 px-3 md:px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
                 activeTab === 'ingredients' ? 'border-[#111] text-[#111]' : 'border-transparent text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -428,7 +416,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {product.benefits && (
             <button
               onClick={() => setActiveTab('benefits')}
-              className={`pb-3 px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
+              className={`pb-3 px-3 md:px-4 font-serif text-base md:text-lg font-bold border-b-2 transition ${
                 activeTab === 'benefits' ? 'border-[#111] text-[#111]' : 'border-transparent text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -438,9 +426,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
 
         {/* Tab Content */}
-        <div style={{ maxWidth: '850px', margin: '0 auto', fontSize: '14px', color: '#333', lineHeight: 1.7 }}>
+        <div style={{ maxWidth: '850px', fontSize: '14px', color: '#333', lineHeight: 1.7 }}>
           
-          <p style={{ textAlign: 'center', fontWeight: 700, fontSize: '13px', background: '#fafafa', padding: '12px', borderRadius: '4px', border: '1px solid #eee', marginBottom: '28px' }}>
+          <p style={{ textAlign: 'left', fontWeight: 700, fontSize: '13px', background: '#fafafa', padding: '12px', borderRadius: '4px', border: '1px solid #eee', marginBottom: '28px' }}>
             Note: {product.name} is freshly prepared and available in {availableWeights.join(', ')} packaging options.
           </p>
 

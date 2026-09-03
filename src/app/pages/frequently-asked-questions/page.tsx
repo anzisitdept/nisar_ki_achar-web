@@ -12,7 +12,7 @@ import ReviewsWidget from '@/components/layout/ReviewsWidget';
 const FAQS = [
   {
     q: 'How can I place an order on Nisar Achar?',
-    a: 'You can easily place an order by browsing our website, clicking "ADD TO CART" or "BUY IT NOW" on any product, and filling out your Cash on Delivery (COD) shipping address at checkout. You can also order directly via WhatsApp at 051-8300036.'
+    a: 'You can easily place an order by browsing our website, clicking "ADD TO CART" or "BUY IT NOW" on any product, and filling out your Cash on Delivery (COD) shipping address at checkout. You can also order directly via WhatsApp at 0334-1677114.'
   },
   {
     q: 'What payment methods do you accept?',
@@ -32,7 +32,7 @@ const FAQS = [
   },
   {
     q: 'What if my glass jar breaks during transit?',
-    a: 'We package all jars in heavy-duty bubble wrap and reinforced corrugated boxes. If your jar arrives damaged or leaking, simply send us a photo on WhatsApp (051-8300036) within 24 hours and we will dispatch a FREE replacement jar immediately!'
+    a: 'We package all jars in heavy-duty bubble wrap and reinforced corrugated boxes. If your jar arrives damaged or leaking, simply send us a photo on WhatsApp (0334-1677114) within 24 hours and we will dispatch a FREE replacement jar immediately!'
   }
 ];
 

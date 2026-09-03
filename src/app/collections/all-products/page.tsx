@@ -11,6 +11,7 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
+import { getProductEffectivePrice, getProductEffectiveOriginalPrice, getProductDisplayWeight } from '@/lib/productPrice';
 import { useCart } from '@/hooks/useCart';
 
 /* ─── Sidebar Section Wrapper ────────────────────────── */
@@ -92,6 +93,10 @@ function PriceSlider({
 /* ─── Single Product Card ────────────────────────────── */
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
+  const displayPrice = getProductEffectivePrice(product);
+  const originalPrice = getProductEffectiveOriginalPrice(product, displayPrice);
+  const displayWeight = getProductDisplayWeight(product);
+  const hasDiscount = originalPrice > displayPrice;
 
   return (
     <div
@@ -146,48 +151,17 @@ function ProductCard({ product }: { product: Product }) {
           {product.name}
         </Link>
         <div style={{ color: '#fac80a', fontSize: '13px' }}>{'★'.repeat(Math.round(product.rating))}</div>
-        <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px' }}>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span style={{ textDecoration: 'line-through' }}>Rs.{(product.originalPrice || 0).toLocaleString()}.00</span>
+        <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px' }}>
+          {hasDiscount && (
+            <span style={{ textDecoration: 'line-through', color: '#999' }}>Rs.{originalPrice.toLocaleString()}.00</span>
           )}
           {product.weights && product.weights.length > 1 && (
-            <span style={{ color: '#999' }}>from</span>
+            <span style={{ color: '#666', fontSize: '11px', fontWeight: 500 }}>{displayWeight}:</span>
           )}
-          <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{(product.price || 0).toLocaleString()}.00</span>
+          <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{displayPrice.toLocaleString()}.00</span>
         </div>
       </div>
     </div>
-  );
-}
-
-/* ─── Grid view mode icon SVGs ───────────────────────── */
-function GridIcon({ mode, active }: { mode: string; active: boolean }) {
-  const c = active ? '#111' : '#aaa';
-  if (mode === 'grid4') return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <rect x="1" y="1" width="7" height="7" fill={c} /><rect x="12" y="1" width="7" height="7" fill={c} />
-      <rect x="1" y="12" width="7" height="7" fill={c} /><rect x="12" y="12" width="7" height="7" fill={c} />
-    </svg>
-  );
-  if (mode === 'grid3') return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <rect x="1" y="1" width="4" height="8" fill={c} /><rect x="8" y="1" width="4" height="8" fill={c} /><rect x="15" y="1" width="4" height="8" fill={c} />
-      <rect x="1" y="11" width="4" height="8" fill={c} /><rect x="8" y="11" width="4" height="8" fill={c} /><rect x="15" y="11" width="4" height="8" fill={c} />
-    </svg>
-  );
-  if (mode === 'grid2') return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <rect x="1" y="1" width="3" height="8" fill={c} /><rect x="6" y="1" width="3" height="8" fill={c} /><rect x="11" y="1" width="3" height="8" fill={c} /><rect x="16" y="1" width="3" height="8" fill={c} />
-      <rect x="1" y="11" width="3" height="8" fill={c} /><rect x="6" y="11" width="3" height="8" fill={c} /><rect x="11" y="11" width="3" height="8" fill={c} /><rect x="16" y="11" width="3" height="8" fill={c} />
-    </svg>
-  );
-  // list
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <rect x="1" y="2" width="18" height="3" fill={c} />
-      <rect x="1" y="8.5" width="18" height="3" fill={c} />
-      <rect x="1" y="15" width="18" height="3" fill={c} />
-    </svg>
   );
 }
 
@@ -205,7 +179,6 @@ function AllProductsContent() {
   const [availability, setAvailability] = useState({ inStock: false, outStock: false });
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 4989]);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [viewMode, setViewMode] = useState<'grid4' | 'grid3' | 'grid2' | 'list'>('grid4');
   const [showFilter, setShowFilter] = useState(false);
 
   const allPrices = products.map(p => p.price);
@@ -248,13 +221,7 @@ function AllProductsContent() {
   const inStockCount = products.filter(p => p.inStock !== false).length;
   const outStockCount = products.filter(p => p.inStock === false).length;
 
-  // Responsive grid columns
-  const getGridClass = () => {
-    if (viewMode === 'list') return 'grid-cols-1';
-    if (viewMode === 'grid2') return 'grid-cols-2';
-    if (viewMode === 'grid3') return 'grid-cols-2 md:grid-cols-3';
-    return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
-  };
+
 
   const SidebarContent = () => (
     <>
@@ -324,7 +291,9 @@ function AllProductsContent() {
               <div>
                 <p style={{ fontSize: '11px', color: '#222', lineHeight: 1.3, marginBottom: '4px' }}>{p.name.split('(')[0].trim()}</p>
                 <p style={{ fontSize: '11px' }}>
-                  <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}.00</span>
+                  {p.originalPrice && p.originalPrice > p.price ? (
+                    <span style={{ textDecoration: 'line-through', color: '#999', marginRight: '4px' }}>Rs.{p.originalPrice.toLocaleString()}.00</span>
+                  ) : null}
                   <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{p.price.toLocaleString()}.00</span>
                 </p>
               </div>
@@ -385,19 +354,7 @@ function AllProductsContent() {
               Filter
             </button>
 
-            {/* View As icons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden md:flex">
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '6px' }}>View As</span>
-              {(['grid4', 'grid3', 'grid2', 'list'] as const).map(mode => (
-                <button
-                  key={mode}
-                  onClick={() => setViewMode(mode)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', opacity: viewMode === mode ? 1 : 0.4 }}
-                >
-                  <GridIcon mode={mode} active={viewMode === mode} />
-                </button>
-              ))}
-            </div>
+
 
             <div style={{ flex: 1 }} />
 
@@ -442,7 +399,7 @@ function AllProductsContent() {
               No products match your filters.
             </div>
           ) : (
-            <div className={`grid ${getGridClass()}`} style={{ gap: '1px', background: '#e5e7eb', border: '1px solid #e5e7eb' }}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: '1px', background: '#e5e7eb', border: '1px solid #e5e7eb' }}>
               {displayed.map(product => (
                 <div key={product.id} style={{ background: '#fff' }}>
                   <ProductCard product={product} />

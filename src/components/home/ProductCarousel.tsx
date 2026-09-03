@@ -7,6 +7,7 @@ import { ShoppingBag, Star } from 'lucide-react';
 import { Product } from '@/types';
 import { useStoreData } from '@/context/StoreDataContext';
 import { useCart } from '@/context/CartContext';
+import { getProductEffectivePrice, getProductEffectiveOriginalPrice, getProductDisplayWeight } from '@/lib/productPrice';
 
 interface ProductCarouselProps {
   title?: string;
@@ -95,6 +96,10 @@ export default function ProductCarousel({
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-3 md:gap-5">
             {filteredProducts.map(product => {
+              const displayPrice = getProductEffectivePrice(product);
+              const originalPrice = getProductEffectiveOriginalPrice(product, displayPrice);
+              const displayWeight = getProductDisplayWeight(product);
+              const hasDiscount = originalPrice > displayPrice;
               const primaryImage = product.image || (product.images && product.images[0]) || '';
               const hoverImage = product.hoverImage || primaryImage;
 
@@ -173,12 +178,15 @@ export default function ProductCarousel({
                           <span className="text-[9px] md:text-[10px] text-gray-500 ml-1">({product.reviewsCount || 100})</span>
                         </div>
 
-                        <div className="flex justify-center items-center space-x-2 text-[10px] md:text-xs">
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</span>
+                        <div className="flex justify-center items-center space-x-1.5 text-[10px] md:text-xs flex-wrap">
+                          {hasDiscount && (
+                            <span className="text-gray-400 line-through">Rs. {originalPrice.toLocaleString()}</span>
+                          )}
+                          {product.weights && product.weights.length > 1 && (
+                            <span className="text-gray-600 text-[10px] md:text-[11px] font-medium">{displayWeight}:</span>
                           )}
                           <span className="text-[#e95144] font-extrabold text-xs md:text-sm">
-                            {product.weights && product.weights.length > 1 ? 'from ' : ''}Rs. {product.price?.toLocaleString()}
+                            Rs. {displayPrice.toLocaleString()}
                           </span>
                         </div>
                       </div>

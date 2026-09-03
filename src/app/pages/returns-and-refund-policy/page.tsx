@@ -33,7 +33,7 @@ export default function ReturnsPolicyPage() {
           <div>
             <h2 className="font-bold text-gray-900 text-base uppercase mb-2">1. Damaged or Leaking Jar Replacement</h2>
             <p>
-              If your parcel arrives with a broken, cracked, or leaking glass jar, please notify us within <strong>24 hours of delivery</strong> by sending a clear photo or video of the parcel (including the packaging) to our WhatsApp helpline at <strong>051-8300036</strong>. Once verified, we will dispatch a brand-new replacement jar absolutely <strong>free of cost</strong>.
+              If your parcel arrives with a broken, cracked, or leaking glass jar, please notify us within <strong>24 hours of delivery</strong> by sending a clear photo or video of the parcel (including the packaging) to our WhatsApp helpline at <strong>0334-1677114</strong>. Once verified, we will dispatch a brand-new replacement jar absolutely <strong>free of cost</strong>.
             </p>
           </div>
 
@@ -64,7 +64,7 @@ export default function ReturnsPolicyPage() {
           <div>
             <h2 className="font-bold text-gray-900 text-base uppercase mb-2">5. How to Submit a Request</h2>
             <p>
-              To raise a return or refund request, WhatsApp us at <strong>051-8300036</strong> or email <strong>admin@nisarachar.com</strong> with your order number, name, and supporting photo/video. Our support team will guide you through the process and resolve your issue as quickly as possible.
+              To raise a return or refund request, WhatsApp us at <strong>0334-1677114</strong> or email <strong>admin@nisarachar.com</strong> with your order number, name, and supporting photo/video. Our support team will guide you through the process and resolve your issue as quickly as possible.
             </p>
           </div>
 

@@ -8,13 +8,13 @@ const contactItems = [
     label: 'Email Us',
   },
   {
-    href: 'https://wa.me/923052396699',
+    href: 'https://wa.me/923341677114',
     src: '/whatsapp.webp',
     alt: 'WhatsApp',
     label: 'WhatsApp Us',
   },
   {
-    href: 'tel:0518300036',
+    href: 'tel:03341677114',
     src: '/phone.webp',
     alt: 'Phone',
     label: 'Call Us',

@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
           <p>You may request access to, correction of, or deletion of your personal data at any time. To exercise these rights, please contact us using the details below.</p>
 
           <h3 className="font-bold text-gray-900 uppercase">Contact Us</h3>
-          <p>If you have any questions about this Privacy Policy or how your data is handled, please contact us at <strong>051-8300036</strong>, WhatsApp <strong>+92 305 2396699</strong>, or email <strong>admin@nisarachar.com</strong>.</p>
+          <p>If you have any questions about this Privacy Policy or how your data is handled, please contact us at <strong>0334-1677114</strong>, WhatsApp <strong>+92 334 1677114</strong>, or email <strong>admin@nisarachar.com</strong>.</p>
         </div>
       </main>
 

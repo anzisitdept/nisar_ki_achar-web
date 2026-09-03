@@ -77,7 +77,7 @@ export default function ShippingPolicyPage() {
           <div>
             <h2 className="font-bold text-gray-900 text-base uppercase mb-2">7. Order Tracking &amp; Support</h2>
             <p>
-              Once your parcel is dispatched, you will receive a tracking number on WhatsApp. For any delivery-related query, contact our helpline at <strong>051-8300036</strong> or WhatsApp us at <strong>+92 305 2396699</strong>. Our support team is available Mon - Sat (9:00 AM - 9:00 PM).
+              Once your parcel is dispatched, you will receive a tracking number on WhatsApp. For any delivery-related query, contact our helpline at <strong>0334-1677114</strong> or WhatsApp us at <strong>+92 334 1677114</strong>. Our support team is available Mon - Sat (9:00 AM - 9:00 PM).
             </p>
           </div>
 

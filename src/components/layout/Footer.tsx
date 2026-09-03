@@ -11,6 +11,7 @@ function FooterSection({ title, children }: { title: string; children: React.Rea
   return (
     <div className="lg:block">
       <button
+        suppressHydrationWarning
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
@@ -79,11 +80,8 @@ export default function Footer() {
               <FooterSection title="SHOP">
                 <ul className="space-y-2.5 text-xs font-normal text-gray-200">
                   <li><Link href="/collections/new-arrivals" className="hover:underline">New Arrivals</Link></li>
-                  <li><Link href="/collections/pickles" className="hover:underline">Pickles</Link></li>
-                  <li><Link href="/collections/murabba" className="hover:underline">Murabbas</Link></li>
+                  <li><Link href="/collections/achar" className="hover:underline">Achar</Link></li>
                   <li><Link href="/collections/chutney" className="hover:underline">Chutney</Link></li>
-                  <li><Link href="/collections/super-foods" className="hover:underline">Super Foods</Link></li>
-                  <li><Link href="/collections/syrup" className="hover:underline">Syrups</Link></li>
                   <li><Link href="/collections/best-selling-pickles" className="hover:underline">Best Selling</Link></li>
                   <li><Link href="/collections/bundles" className="hover:underline">Bundles</Link></li>
                   <li><Link href="/collections/all-products" className="hover:underline">All Products</Link></li>
@@ -119,12 +117,14 @@ export default function Footer() {
               {/* Form Input + Submit Button */}
               <form onSubmit={e => { e.preventDefault(); alert('Subscribed successfully!'); }} className="flex gap-2 mb-5">
                 <input
+                  suppressHydrationWarning
                   type="email"
                   required
                   placeholder="Enter Your Email Address"
                   className="w-full px-3 py-2.5 bg-white text-[#e60000] text-xs font-medium focus:outline-none placeholder-gray-500 rounded-none"
                 />
                 <button
+                  suppressHydrationWarning
                   type="submit"
                   className="bg-white text-[#e60000] font-bold text-xs tracking-wider uppercase px-4 py-2.5 hover:bg-gray-100 transition rounded-none flex-shrink-0"
                 >
@@ -183,11 +183,11 @@ export default function Footer() {
               <ul className="space-y-3 text-xs font-normal text-gray-200 leading-relaxed">
                 <li className="flex items-start gap-2">
                   <span>📞</span>
-                  <span>WhatsApp us on <strong>+92 305 2396699</strong></span>
+                  <span>WhatsApp us on <strong>+92 334 1677114</strong></span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>📞</span>
-                  <span>WhatsApp or ☎ Call us on <strong>0518300036</strong>.</span>
+                  <span>WhatsApp or ☎ Call us on <strong>0334-1677114</strong>.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>✉</span>
@@ -205,11 +205,20 @@ export default function Footer() {
 
               {/* Developed By ANZI & Co. watermark */}
               <div className="mt-6 pt-5 border-t border-white/20">
-                <p className="text-[10px] text-gray-300/70 mb-2">Developed By</p>
-                <div className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-full bg-[#e6b800] text-[#e60000] flex items-center justify-center font-bold text-sm">A</span>
-                  <span className="font-bold tracking-wide text-[#e6b800]">ANZI &amp; Co.</span>
-                </div>
+                <p className="text-xs font-semibold text-white uppercase tracking-wider mb-2.5">Developed By</p>
+                <a
+                  href="https://www.anziandco.com?ref=nisarachar"
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-block transition-transform duration-200 hover:scale-[1.03] focus:outline-none"
+                  title="ANZI & Co."
+                >
+                  <img
+                    src="/watermark.png"
+                    alt="ANZI & Co."
+                    className="w-56 max-w-full h-auto object-contain"
+                  />
+                </a>
               </div>
             </div>
 

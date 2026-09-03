@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${josefinSans.variable} ${abrilFatface.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col font-sans bg-white">
+    <html lang="en" className={`${josefinSans.variable} ${abrilFatface.variable}`} suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col font-sans bg-white" suppressHydrationWarning>
         <StoreDataProvider>
           <CartProvider>
             {children}

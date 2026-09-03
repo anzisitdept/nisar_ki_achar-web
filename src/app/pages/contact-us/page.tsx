@@ -153,7 +153,7 @@ export default function ContactUsPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase">Customer Support Helpline</h4>
-                    <p className="font-bold text-sm text-[#e60000] mt-0.5">051-8300036 / 0300-0504030</p>
+                    <p className="font-bold text-sm text-[#e60000] mt-0.5">0334-1677114</p>
                     <p className="text-gray-500 text-[11px]">Available Mon - Sat (9:00 AM - 9:00 PM)</p>
                   </div>
                 </div>
@@ -165,12 +165,12 @@ export default function ContactUsPage() {
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase">WhatsApp Instant Support</h4>
                     <a
-                      href="https://wa.me/923052396699"
+                      href="https://wa.me/923341677114"
                       target="_blank"
                       rel="noreferrer"
                       className="font-bold text-sm text-green-700 underline mt-0.5 block hover:text-green-800"
                     >
-                      Click to chat on WhatsApp (+92 305 2396699)
+                      Click to chat on WhatsApp (+92 334 1677114)
                     </a>
                   </div>
                 </div>

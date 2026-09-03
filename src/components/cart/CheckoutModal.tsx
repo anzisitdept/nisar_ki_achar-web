@@ -19,6 +19,7 @@ export default function CheckoutModal() {
 
   const [formData, setFormData] = useState({
     fullName: '',
+    email: '',
     phone: '',
     address: '',
     notes: ''
@@ -103,7 +104,7 @@ export default function CheckoutModal() {
 
   if (!isCheckoutOpen) return null;
 
-  const deliveryFee = amountNeededForFreeShipping === 0 ? 0 : 200;
+  const deliveryFee = subtotal >= 3000 ? 0 : 200;
   const grandTotal = subtotal + deliveryFee;
 
   const handleProvinceChange = (value: string, label: string) => {
@@ -127,8 +128,13 @@ export default function CheckoutModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName || !formData.phone || !formData.address) {
-      alert('Please fill in all required shipping details.');
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.address) {
+      alert('Please fill in all required shipping details including your email address.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      alert('Please enter a valid email address so we can send your order confirmation.');
       return;
     }
     if (!location.provinceId || !location.districtId || !location.tehsilId) {
@@ -140,7 +146,7 @@ export default function CheckoutModal() {
 
     const orderPayload = {
       customerName: formData.fullName,
-      customerEmail: '',
+      customerEmail: formData.email.trim(),
       customerPhone: formData.phone,
       shippingAddress: formData.address,
       city: fullLocation,
@@ -173,8 +179,32 @@ export default function CheckoutModal() {
 
     // Save to Firestore in real-time for Admin Panel
     const result = await saveOrderToFirestore(orderPayload);
+    const placedOrderId = result.orderId || '';
 
-    setOrderId(result.orderId || '');
+    // Trigger order confirmation email in the background
+    try {
+      fetch('/api/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: placedOrderId,
+          customerName: formData.fullName,
+          customerEmail: formData.email.trim(),
+          customerPhone: formData.phone,
+          shippingAddress: formData.address,
+          city: fullLocation,
+          items: orderPayload.items,
+          subtotal,
+          shippingFee: deliveryFee,
+          totalAmount: grandTotal,
+          paymentMethod: orderPayload.paymentMethod,
+        }),
+      }).catch(err => console.error("Email notification error:", err));
+    } catch (err) {
+      console.error("Failed to dispatch order email:", err);
+    }
+
+    setOrderId(placedOrderId);
     setIsSaving(false);
     setIsSubmitted(true);
     clearCart();
@@ -221,7 +251,7 @@ export default function CheckoutModal() {
                 Your order number is <span className="font-bold text-[#e60000]">{orderId}</span>
               </p>
               <p className="text-xs text-gray-500 mt-2">
-                Our team will call or WhatsApp you on <span className="font-semibold text-gray-800">{formData.phone}</span> to verify your delivery address before dispatch.
+                Order confirmation has been sent to <span className="font-semibold text-gray-800">{formData.email}</span>. Our team will also verify your order on <span className="font-semibold text-gray-800">{formData.phone}</span> before dispatch.
               </p>
             </div>
 
@@ -229,6 +259,14 @@ export default function CheckoutModal() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Customer:</span>
                 <span className="font-bold text-gray-800">{formData.fullName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Email Address:</span>
+                <span className="font-semibold text-gray-800">{formData.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Contact Number:</span>
+                <span className="font-semibold text-gray-800">{formData.phone}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Shipping Address:</span>
@@ -242,7 +280,7 @@ export default function CheckoutModal() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href={`https://wa.me/923052396699?text=Hi%20Nisar%20Achar,%20I%20placed%20order%20${orderId}`}
+                href={`https://wa.me/923341677114?text=Hi%20Nisar%20Achar,%20I%20placed%20order%20${orderId}`}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg flex items-center justify-center space-x-2 transition"
@@ -278,6 +316,23 @@ export default function CheckoutModal() {
                   onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                   className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. yourname@example.com"
+                  value={formData.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e60000] outline-none"
+                />
+                <p className="text-[10px] text-gray-500 mt-1">
+                  Order confirmation & tracking updates will be sent to this email.
+                </p>
               </div>
 
               <div>

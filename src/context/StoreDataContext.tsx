@@ -67,6 +67,8 @@ const DEFAULT_STORE_CONTENT: StoreContent = {
   reels: []
 };
 
+import { normalizeProduct } from '@/lib/productPrice';
+
 interface StoreDataContextType {
   products: Product[];
   categories: Category[];
@@ -86,14 +88,14 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
     // 1. Subscribe to dynamic products collection in Firestore
     const unsubProducts = subscribeProducts((dynamicProducts) => {
       if (dynamicProducts && dynamicProducts.length > 0) {
-        // Map products and preserve defaults
-        const mapped = dynamicProducts.map(p => ({
+        // Map products, normalize prices from weightPrices, and preserve defaults
+        const mapped = dynamicProducts.map(p => normalizeProduct({
           ...p,
           inStock: p.inStock !== false // Default to true if not specified
         }));
         setProducts(mapped);
       } else {
-        setProducts(PRODUCTS);
+        setProducts(PRODUCTS.map(normalizeProduct));
       }
     });
 

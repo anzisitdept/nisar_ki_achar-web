@@ -1,13 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Star, Heart } from 'lucide-react';
-import { Product } from '@/data/products';
+import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
+import { getProductEffectivePrice, getProductEffectiveOriginalPrice, getProductDisplayWeight } from '@/lib/productPrice';
 
 export default function ProductCardClient({ product }: { product: Product }) {
+  const [isHovered, setIsHovered] = useState(false);
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const isWishlisted = isInWishlist(product.id);
+
+  const displayPrice = getProductEffectivePrice(product);
+  const originalPrice = getProductEffectiveOriginalPrice(product, displayPrice);
+  const displayWeight = getProductDisplayWeight(product);
+  const hasDiscount = originalPrice > displayPrice;
 
   return (
     <div className="bg-white group border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative">
@@ -91,12 +99,15 @@ export default function ProductCardClient({ product }: { product: Product }) {
             <span className="text-[10px] text-gray-500 ml-1">({product.reviewsCount})</span>
           </div>
 
-          <div className="flex justify-center items-center space-x-2 text-xs">
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</span>
+          <div className="flex justify-center items-center space-x-1.5 text-xs flex-wrap">
+            {hasDiscount && (
+              <span className="text-gray-400 line-through">Rs. {originalPrice.toLocaleString()}</span>
+            )}
+            {product.weights && product.weights.length > 1 && (
+              <span className="text-gray-600 text-[11px] font-medium">{displayWeight}:</span>
             )}
             <span className="text-[#e60000] font-extrabold text-sm">
-              {product.weights && product.weights.length > 1 ? 'from ' : ''}Rs. {product.price?.toLocaleString()}
+              Rs. {displayPrice.toLocaleString()}
             </span>
           </div>
         </div>

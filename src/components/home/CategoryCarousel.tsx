@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useStoreData } from '@/context/StoreDataContext';
@@ -16,10 +16,41 @@ export default function CategoryCarousel({
   categoryIds 
 }: CategoryCarouselProps) {
   const { categories } = useStoreData();
-  const [emblaRef] = useEmblaCarousel({
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
     containScroll: 'trimSnaps'
   });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+      setScrollSnaps(emblaApi.scrollSnapList());
+    };
+    const onReInit = () => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+    };
+
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onReInit);
+    emblaApi.on('resize', onReInit);
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onReInit);
+      emblaApi.off('resize', onReInit);
+    };
+  }, [emblaApi]);
+
+  const scrollTo = useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi]
+  );
 
   if (!categories || categories.length === 0) {
     return null;
@@ -67,6 +98,22 @@ export default function CategoryCarousel({
           ))}
         </div>
       </div>
+
+      {/* Carousel Dots (mobile only, when more than one slide) */}
+      {scrollSnaps.length > 1 && (
+        <div className="flex md:hidden justify-center gap-2 mt-5">
+          {scrollSnaps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                selectedIndex === i ? 'w-6 bg-[#e60000]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

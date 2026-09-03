@@ -54,10 +54,9 @@ export default function Header() {
 
   const navItems = [
     { label: 'NEW ARRIVALS', href: '/collections/new-arrivals' },
-    { label: 'PICKLES', href: '/collections/pickles' },
     {
-      label: 'MURABBAS',
-      href: '/collections/murabba',
+      label: 'ACHAR',
+      href: '/collections/achar',
       badge: { text: 'NEW ARRIVALS', className: 'bg-[#e60000] text-white' },
     },
     { label: 'CHUTNEY', href: '/collections/chutney' },
@@ -76,6 +75,7 @@ export default function Header() {
 
             {/* Mobile Menu Toggle */}
             <button
+              suppressHydrationWarning
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden p-2 text-[#e60000] flex-shrink-0"
               aria-label="Open menu"
@@ -106,7 +106,7 @@ export default function Header() {
               {/* Customer Service Text */}
               <div className="hidden md:block text-[11px] text-[#e60000] font-semibold text-right mb-2">
                 Customer Service<br />
-                WhatsApp & Cell 0518300036
+                WhatsApp & Cell 0334-1677114
               </div>
 
               {/* Actions Row: Search, Shopping Cart, Wishlist, Sign in */}
@@ -114,6 +114,7 @@ export default function Header() {
 
                 {/* Search Bar Trigger */}
                 <button
+                  suppressHydrationWarning
                   onClick={() => setIsSearchOpen(true)}
                   className="flex items-center bg-[#fae9e8] text-[#e60000] px-2 sm:px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-semibold hover:bg-[#f5d6d4] transition"
                 >
@@ -123,12 +124,13 @@ export default function Header() {
 
                 {/* Shopping Cart Button */}
                 <button
+                  suppressHydrationWarning
                   onClick={() => setIsCartOpen(true)}
                   className="flex items-center space-x-1.5 text-[#e60000] font-bold text-[10px] md:text-xs hover:opacity-80 transition"
                 >
                   <div className="relative">
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-                    {totalCount > 0 && (
+                    {mounted && totalCount > 0 && (
                       <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-extrabold animate-pulse">
                         {totalCount}
                       </span>
@@ -144,7 +146,7 @@ export default function Header() {
                 >
                   <div className="relative">
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                    {wishlist.length > 0 && (
+                    {mounted && wishlist.length > 0 && (
                       <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-bold">
                         {wishlist.length}
                       </span>

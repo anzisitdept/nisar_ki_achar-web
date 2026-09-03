@@ -31,6 +31,8 @@ function SideSection({ title, children }: { title: string; children: React.React
   );
 }
 
+import { getProductEffectivePrice, getProductEffectiveOriginalPrice, getProductDisplayWeight } from '@/lib/productPrice';
+
 /* ─── Product Card ───────────────────────────── */
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
@@ -39,6 +41,11 @@ function ProductCard({ product }: { product: Product }) {
     : ((product.images && product.images[0] && product.images[0].trim() !== '') ? product.images[0] : '');
   const hoverImg = (product.hoverImage && product.hoverImage.trim() !== '') ? product.hoverImage : primaryImg;
   const img = hovered && hoverImg ? hoverImg : primaryImg;
+
+  const displayPrice = getProductEffectivePrice(product);
+  const originalPrice = getProductEffectiveOriginalPrice(product, displayPrice);
+  const displayWeight = getProductDisplayWeight(product);
+  const hasDiscount = originalPrice > displayPrice;
 
   return (
     <div
@@ -79,14 +86,20 @@ function ProductCard({ product }: { product: Product }) {
         </h3>
       </Link>
 
-      <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}>
-        {product.originalPrice && product.originalPrice > product.price && (
-          <span style={{ textDecoration: 'line-through' }}>Rs.{(product.originalPrice || 0).toLocaleString()}.00</span>
+      <div style={{ fontSize: '12px', color: '#777', display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px' }}>
+        {hasDiscount && (
+          <span style={{ textDecoration: 'line-through', color: '#999' }}>
+            Rs.{originalPrice.toLocaleString()}.00
+          </span>
         )}
         {product.weights && product.weights.length > 1 && (
-          <span style={{ color: '#888' }}>from</span>
+          <span style={{ color: '#666', fontSize: '11px', fontWeight: 500 }}>
+            {displayWeight}:
+          </span>
         )}
-        <span style={{ color: '#e60000', fontWeight: 700 }}>Rs.{(product.price || 0).toLocaleString()}.00</span>
+        <span style={{ color: '#e60000', fontWeight: 700 }}>
+          Rs.{displayPrice.toLocaleString()}.00
+        </span>
       </div>
     </div>
   );
@@ -118,7 +131,6 @@ function CategoryInner() {
 
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'best-selling');
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [viewMode, setViewMode] = useState<'grid4' | 'grid3' | 'grid2' | 'list'>('grid4');
   const [showFilter, setShowFilter] = useState(false);
 
   let sorted = [...displayProductsList];
@@ -127,14 +139,6 @@ function CategoryInner() {
   else if (sortBy === 'title') sorted.sort((a, b) => a.name.localeCompare(b.name));
 
   const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
-
-  // Responsive grid columns for mobile/tablet
-  const getResponsiveGrid = () => {
-    if (viewMode === 'list') return 'grid-cols-1';
-    if (viewMode === 'grid2') return 'grid-cols-2';
-    if (viewMode === 'grid3') return 'grid-cols-2 md:grid-cols-3';
-    return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
-  };
 
   const Sidebar = () => (
     <aside className="lg:border-r lg:border-gray-100 lg:pr-5">
@@ -189,7 +193,9 @@ function CategoryInner() {
               <div>
                 <p className="text-[11px] text-gray-800 leading-snug mb-1">{p.name.split('(')[0].trim()}</p>
                 <p className="text-[11px]">
-                  <span className="line-through text-gray-400 mr-1">Rs.{p.originalPrice.toLocaleString()}</span>
+                  {p.originalPrice && p.originalPrice > p.price ? (
+                    <span className="line-through text-gray-400 mr-1">Rs.{p.originalPrice.toLocaleString()}</span>
+                  ) : null}
                   <span className="text-[#e60000] font-bold">Rs.{p.price.toLocaleString()}</span>
                 </p>
               </div>
@@ -251,21 +257,6 @@ function CategoryInner() {
               Filter
             </button>
 
-            {/* View As */}
-            <div className="hidden md:flex items-center gap-1">
-              <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mr-1.5">View As</span>
-              {(['grid4', 'grid3', 'grid2', 'list'] as const).map(mode => (
-                <button
-                  key={mode}
-                  onClick={() => setViewMode(mode)}
-                  className="bg-none border-none cursor-pointer p-1"
-                  style={{ opacity: viewMode === mode ? 1 : 0.4 }}
-                >
-                  <span className="text-[11px] font-bold">{mode === 'grid4' ? '田' : mode === 'grid3' ? '≡' : mode === 'grid2' ? '⌸' : '☰'}</span>
-                </button>
-              ))}
-            </div>
-
             <div className="flex-1" />
 
             {/* Items Per Page */}
@@ -298,8 +289,8 @@ function CategoryInner() {
 
           </div>
 
-          {/* Product Grid */}
-          <div className={`grid gap-3 md:gap-4 ${getResponsiveGrid()}`}>
+          {/* Product Grid - Default 4-Column Layout */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {sorted.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}

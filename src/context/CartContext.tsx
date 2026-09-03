@@ -86,18 +86,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addToCart = (product: Product, selectedWeight?: string, quantity = 1) => {
-    // 1. Determine active weight: use selectedWeight, or product.weights[0], or fallback '1kg'
+    // 1. Determine active weight: prioritize '1kg', or selectedWeight, or availableWeights[0]
     const availableWeights = (product.weights && Array.isArray(product.weights) && product.weights.length > 0)
       ? product.weights
       : ['1kg'];
-    const weight = selectedWeight || availableWeights[0] || '1kg';
+    const defaultWeight = availableWeights.find(w => w.toLowerCase().replace(/\s+/g, '') === '1kg') || availableWeights[0] || '1kg';
+    const weight = selectedWeight || defaultWeight;
 
     // 2. Determine active unit price based on selected weight from product.weightPrices
-    const price = (product.weightPrices && typeof product.weightPrices[weight] === 'number')
+    const price = (product.weightPrices && typeof product.weightPrices[weight] === 'number' && product.weightPrices[weight] > 0)
       ? product.weightPrices[weight]
       : (product.price || 0);
 
-    const originalPrice = product.originalPrice || Math.round(price * 1.35);
+    const originalPrice = (typeof product.originalPrice === 'number' && product.originalPrice > price)
+      ? product.originalPrice
+      : 0;
     const cartId = `${product.id || product.slug}-${weight}`;
 
     setCart(prev => {
