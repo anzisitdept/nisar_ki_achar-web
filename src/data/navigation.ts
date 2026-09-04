@@ -2,7 +2,6 @@ import { NavigationItem } from '@/types';
 
 export const MAIN_NAVIGATION: NavigationItem[] = [
   { label: 'NEW ARRIVALS', href: '/collections/new-arrivals' },
-  { label: 'PICKLES', href: '/collections/pickles' },
   { label: 'ACHAR', href: '/collections/achar' },
   { label: 'CHUTNEY', href: '/collections/chutney' },
   { label: 'SUPER FOODS', href: '/collections/super-foods' },
