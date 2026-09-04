@@ -139,22 +139,6 @@ export default function Header() {
                   <span className="hidden sm:inline">Shopping Cart</span>
                 </button>
 
-                {/* Wishlist Link */}
-                <Link
-                  href="/wishlist"
-                  className="flex items-center space-x-1.5 text-[#e60000] font-semibold text-[10px] md:text-xs hover:opacity-80 transition"
-                >
-                  <div className="relative">
-                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                    {mounted && wishlist.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-[#e60000] text-white text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-bold">
-                        {wishlist.length}
-                      </span>
-                    )}
-                  </div>
-                  <span className="hidden sm:inline">Wishlist</span>
-                </Link>
-
                 {/* Sign in Link connected to /account */}
                 <Link
                   href="/account"
