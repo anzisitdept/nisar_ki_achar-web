@@ -11,6 +11,7 @@ export interface Product {
   isBestSeller: boolean;
   isNew: boolean;
   inStock?: boolean; // Synced with Admin panel (optional for local fallback)
+  showInAllProducts?: boolean; // Synced with Admin panel (controls visibility on /collections/all-products)
   image: string;
   hoverImage: string;
   images: string[];

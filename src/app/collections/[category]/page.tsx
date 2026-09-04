@@ -105,20 +105,22 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-function CategoryInner() {
+export function CategoryInner({ forcedCategory }: { forcedCategory?: string } = {}) {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { products, categories } = useStoreData();
 
-  const categorySlug = (params?.category as string) || 'murabba';
+  const categorySlug = forcedCategory || (params?.category as string) || 'all-products';
   const categoryData = categories.find(c => c.slug === categorySlug || c.id === categorySlug);
-  const categoryTitle = categoryData ? categoryData.name.split('(')[0].trim() : categorySlug.replace(/-/g, ' ').toUpperCase();
+  const categoryTitle = (categorySlug === 'all' || categorySlug === 'all-products')
+    ? 'ALL PRODUCTS'
+    : (categoryData ? categoryData.name.split('(')[0].trim().toUpperCase() : categorySlug.replace(/-/g, ' ').toUpperCase());
 
   // Dynamically filter products by category
   let categoryProducts: Product[] = [];
   if (categorySlug === 'all' || categorySlug === 'all-products') {
-    categoryProducts = products;
+    categoryProducts = products.filter(p => p.showInAllProducts !== false);
   } else if (categorySlug === 'best-selling' || categorySlug === 'best-sellers' || categorySlug === 'best-selling-pickles') {
     categoryProducts = products.filter(p => p.isBestSeller);
   } else if (categorySlug === 'new-arrivals') {
@@ -127,17 +129,34 @@ function CategoryInner() {
     categoryProducts = products.filter(p => p.category.toLowerCase() === categorySlug.toLowerCase());
   }
 
-  const displayProductsList = categoryProducts.length > 0 ? categoryProducts : products.filter(p => p.category === categorySlug);
+  const isAllProducts = categorySlug === 'all' || categorySlug === 'all-products';
+  const displayProductsList = isAllProducts
+    ? categoryProducts
+    : (categoryProducts.length > 0 ? categoryProducts : products.filter(p => p.category === categorySlug));
 
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'best-selling');
+  const defaultSort = isAllProducts ? 'featured' : 'best-selling';
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || defaultSort);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [showFilter, setShowFilter] = useState(false);
+  const [inStockFilter, setInStockFilter] = useState(false);
+  const [outOfStockFilter, setOutOfStockFilter] = useState(false);
 
-  let sorted = [...displayProductsList];
-  if (sortBy === 'price-low') sorted.sort((a, b) => a.price - b.price);
-  else if (sortBy === 'price-high') sorted.sort((a, b) => b.price - a.price);
-  else if (sortBy === 'title') sorted.sort((a, b) => a.name.localeCompare(b.name));
+  const inStockCount = displayProductsList.filter(p => p.inStock !== false).length;
+  const outOfStockCount = displayProductsList.filter(p => p.inStock === false).length;
 
+  let filtered = [...displayProductsList];
+  if (inStockFilter && !outOfStockFilter) {
+    filtered = filtered.filter(p => p.inStock !== false);
+  } else if (!inStockFilter && outOfStockFilter) {
+    filtered = filtered.filter(p => p.inStock === false);
+  }
+
+  if (sortBy === 'price-low') filtered.sort((a, b) => a.price - b.price);
+  else if (sortBy === 'price-high') filtered.sort((a, b) => b.price - a.price);
+  else if (sortBy === 'title') filtered.sort((a, b) => a.name.localeCompare(b.name));
+  else if (sortBy === 'best-selling') filtered.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
+
+  const displayed = filtered.slice(0, itemsPerPage);
   const bestSellers = products.filter(p => p.isBestSeller).slice(0, 3);
 
   const Sidebar = () => (
@@ -168,12 +187,22 @@ function CategoryInner() {
       <SideSection title="Availability">
         <div className="flex flex-col gap-1.5 text-xs text-gray-600">
           <label className="flex items-center gap-1.5 cursor-pointer">
-            <input type="checkbox" defaultChecked />
-            <span>In Stock ({displayProductsList.length})</span>
+            <input
+              type="checkbox"
+              checked={inStockFilter}
+              onChange={e => setInStockFilter(e.target.checked)}
+              className="accent-[#e60000] cursor-pointer"
+            />
+            <span>In Stock ({inStockCount})</span>
           </label>
-          <label className="flex items-center gap-1.5 cursor-pointer opacity-60">
-            <input type="checkbox" />
-            <span>Out Of Stock (0)</span>
+          <label className={`flex items-center gap-1.5 cursor-pointer ${outOfStockCount === 0 ? 'opacity-60' : ''}`}>
+            <input
+              type="checkbox"
+              checked={outOfStockFilter}
+              onChange={e => setOutOfStockFilter(e.target.checked)}
+              className="accent-[#e60000] cursor-pointer"
+            />
+            <span>Out Of Stock ({outOfStockCount})</span>
           </label>
         </div>
       </SideSection>
@@ -265,7 +294,7 @@ function CategoryInner() {
               <select
                 value={itemsPerPage}
                 onChange={e => setItemsPerPage(Number(e.target.value))}
-                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white"
+                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white cursor-pointer"
               >
                 <option value={20}>20</option>
                 <option value={40}>40</option>
@@ -278,8 +307,9 @@ function CategoryInner() {
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
-                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white"
+                className="border border-gray-300 rounded px-2 py-1.5 text-xs bg-white cursor-pointer"
               >
+                <option value="featured">Featured</option>
                 <option value="best-selling">Best Selling</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -290,11 +320,17 @@ function CategoryInner() {
           </div>
 
           {/* Product Grid - Default 4-Column Layout */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {sorted.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {displayed.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#999', fontSize: '14px' }}>
+              No products found.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {displayed.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
 
         </div>
 
@@ -303,13 +339,13 @@ function CategoryInner() {
   );
 }
 
-export default function CategoryCollectionPage() {
+export default function CategoryCollectionPage({ forcedCategory }: { forcedCategory?: string } = {}) {
   return (
     <>
       <TopBar />
       <Header />
       <Suspense fallback={<div style={{ padding: '60px', textAlign: 'center', color: '#888' }}>Loading Category…</div>}>
-        <CategoryInner />
+        <CategoryInner forcedCategory={forcedCategory} />
       </Suspense>
 
       <Footer />

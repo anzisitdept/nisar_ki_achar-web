@@ -11,6 +11,7 @@ export interface Product {
   isBestSeller: boolean;
   isNew: boolean;
   inStock?: boolean;
+  showInAllProducts?: boolean;
   image: string;
   hoverImage: string;
   images: string[];
